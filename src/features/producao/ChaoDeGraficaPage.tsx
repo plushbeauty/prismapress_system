@@ -65,7 +65,7 @@ export default function ChaoDeGraficaPage() {
             <div className="print-panel-heading"><span className="print-icon-tile cyan"><Clock3 size={19} /></span><div><small>APONTAMENTO</small><h3>Registro de produção</h3></div></div>
             <div className="print-production-fields">
               <label>Quantidade produzida<input type="number" min="0" placeholder="0" disabled /></label>
-              <label>Quantidade refug ada<input type="number" min="0" placeholder="0" disabled /></label>
+              <label>Quantidade refugada<input type="number" min="0" placeholder="0" disabled /></label>
               <label>Observações<textarea placeholder="Registre ocorrências ou detalhes do processo..." disabled /></label>
             </div>
             <div className="print-action-grid">
