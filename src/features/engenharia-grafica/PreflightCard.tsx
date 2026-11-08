@@ -8,6 +8,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import "./PreflightCard.css";
+import { analisarArtePreflight } from "../../lib/preflight";
 
 export type PreflightStatus = "critico" | "atencao" | "aprovado";
 
@@ -48,7 +49,7 @@ export interface PreflightAnaliseInput {
 interface PreflightCardProps {
   pedido: PreflightPedido;
   maquina: string;
-  analisarArte: (input: PreflightAnaliseInput) => Promise<PreflightResultado>;
+  analisarArte?: (input: PreflightAnaliseInput) => Promise<PreflightResultado>;
 }
 
 const statusConfig = {
@@ -57,7 +58,7 @@ const statusConfig = {
   aprovado: { label: "Arte conforme", Icon: CheckCircle2, className: "preflight-status--approved" },
 } satisfies Record<PreflightStatus, { label: string; Icon: typeof CheckCircle2; className: string }>;
 
-export function PreflightCard({ pedido, maquina, analisarArte }: PreflightCardProps) {
+export function PreflightCard({ pedido, maquina, analisarArte = analisarArtePreflight }: PreflightCardProps) {
   const [carregando, setCarregando] = useState(false);
   const [resultado, setResultado] = useState<PreflightResultado | null>(null);
   const [erro, setErro] = useState<string | null>(null);
