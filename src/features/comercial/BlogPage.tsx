@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowRight, Clock3, Search, Sparkles } from "lucide-react";
+import { Clock3, Search, Sparkles } from "lucide-react";
 import "./BlogPage.css";
 
 const categories = ["Todos", "Gestão", "Produção", "Vendas", "Financeiro", "Tecnologia"];
