@@ -52,3 +52,12 @@
 .back-public{margin-top:auto;border:0;background:transparent;text-align:left;padding:12px 10px;color:#8066df;font-size:10px;font-weight:800}
 @media(max-width:900px){.public-hero{padding:55px 7%;grid-template-columns:1fr}.public-visual{height:350px}.benefit-grid{grid-template-columns:repeat(2,1fr)}.public-plans .plans-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.public-header{height:65px;padding:0 16px}.public-header nav{gap:12px}.public-header nav a{font-size:10px}.public-login{padding:10px;font-size:0}.public-hero{padding:48px 22px}.public-hero h1{font-size:43px}.public-visual{height:320px}.public-benefits{padding:50px 20px}.benefit-grid{grid-template-columns:1fr 1fr;gap:8px}.benefit-grid article{padding:16px 12px}.public-plans{padding:48px 14px}.public-plans .plans-grid{grid-template-columns:1fr}.public-plans .plans-hero{padding:28px 18px}.public-about{padding:38px 22px;display:block}.public-about .public-cta{margin-top:18px}.public-footer{padding:20px;flex-wrap:wrap}.public-footer>span{order:3;width:100%}}
+
+/* Recuperação global de erros — identidade PRISMAPRES */
+.app-error{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(ellipse at 80% 15%,#eee9ff,transparent 42%),#f8f7fc}
+.app-error-card{width:min(100%,480px);padding:38px;background:#fff;border:1px solid #eeebf5;border-radius:18px;box-shadow:0 24px 70px #2a1c5712}
+.app-error-card>.brand{margin-bottom:38px}
+.app-error-card>small{font-size:9px;font-weight:800;letter-spacing:.14em;color:#8972dc}
+.app-error-card h1{font:800 29px/1.15 Manrope,sans-serif;letter-spacing:-.04em;color:#29253d;margin:14px 0}
+.app-error-card p{font-size:13px;line-height:1.7;color:#858094}
+.app-error-card .primary{max-width:230px;padding:0 16px}
