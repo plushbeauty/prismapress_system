@@ -61,3 +61,10 @@
 .app-error-card h1{font:800 29px/1.15 Manrope,sans-serif;letter-spacing:-.04em;color:#29253d;margin:14px 0}
 .app-error-card p{font-size:13px;line-height:1.7;color:#858094}
 .app-error-card .primary{max-width:230px;padding:0 16px}
+
+/* Navegação principal acessível e persistente em telas grandes */
+.shell>.app-sidebar{position:sticky;top:0;height:100vh;min-height:100vh;overflow-y:auto;overscroll-behavior:contain}
+.shell>.app-sidebar>nav{flex:1;min-height:0;overflow-y:auto}
+.shell>.app-sidebar>nav::-webkit-scrollbar{width:5px}
+.shell>.app-sidebar>nav::-webkit-scrollbar-thumb{background:#e5e0f1;border-radius:8px}
+@media(max-width:650px){.shell>.app-sidebar{position:sticky;top:0;height:100vh;min-height:100vh}}
