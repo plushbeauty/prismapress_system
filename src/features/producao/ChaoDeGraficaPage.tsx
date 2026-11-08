@@ -28,7 +28,7 @@ export default function ChaoDeGraficaPage() {
           <h2 id="print-floor-title">Chão de gráfica</h2>
           <p>Terminal do operador e acompanhamento das ordens de impressão em um único espaço.</p>
         </div>
-        <div className="print-floor-live"><span /> OPERAÇÃO CONECTADA QUANDO O ERP ESTIVER CONFIGURADO</div>
+        <div className="print-floor-live"><span /> INTEGRAÇÃO OPERACIONAL PENDENTE</div>
       </div>
 
       <div className="print-floor-tabs" role="tablist" aria-label="Área de produção">
