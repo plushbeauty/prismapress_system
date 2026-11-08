@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Component, useState, type ErrorInfo, type ReactNode } from 'react'
 import PlanosPage from './features/comercial/PlanosPage'
 import DashboardPage from './features/comercial/DashboardPage'
 import BlogPage from './features/comercial/BlogPage'
@@ -47,7 +47,7 @@ function PublicHome({ onLogin }: { onLogin: () => void }) {
   )
 }
 
-export default function App() {
+function AppContent() {
   const [mode, setMode] = useState<'home' | 'login' | 'app'>('home')
   const [page, setPage] = useState('Visão geral')
   const [email, setEmail] = useState('')
@@ -61,4 +61,38 @@ export default function App() {
   </main>
 
   return <div className="shell"><aside><div className="brand dark"><Command/> PRISMA<span>PRES</span></div><div className="company">P <span><b>Plush Print Studio</b><small>Ambiente demonstrativo</small></span><ChevronDown size={15}/></div>{groups.map(g => <section className="navgroup" key={g.name}><small>{g.name}</small>{g.items.map(([label, Icon]) => <button className={page === label ? 'selected' : ''} onClick={() => setPage(label)} key={label}><Icon size={17}/>{label}</button>)}</section>)}<button className="back-public" onClick={() => setMode('home')}>← Site público</button><div className="user">FS <span><b>Administrador</b><small>Gestor da gráfica</small></span></div></aside><main><header><span>Workspace　/　<b>{page}</b></span><div><Search size={16}/><input placeholder="Buscar pedidos, clientes..."/><Bell size={18}/><b>FS</b></div></header><article className="content"><div className="heading"><div><small>VISÃO OPERACIONAL · PRISMAPRES</small><h1>{page === 'Visão geral' ? 'Sua gráfica em foco' : page}</h1><p>Acompanhe o ritmo da sua gráfica em um só lugar.</p></div><button className="primary" onClick={() => setPage('Orçamentos')}><Plus size={16}/> Novo orçamento</button></div>{page === 'Blog' ? <BlogPage/> : page === 'Visão geral' ? <DashboardPage onNavigate={setPage}/> : <><div className="status"><CheckCircle2 size={15}/> PAINEL DEMONSTRATIVO <span><CalendarDays size={14}/> Semana atual</span></div><div className="metrics">{metrics.map(m => <section key={m[0]}><small>{m[0]}</small><strong>{m[1]}</strong><em>{m[2]}</em></section>)}</div><div className="columns"><section className="panel"><small>ACOMPANHAMENTO</small><h2>Pedidos em produção</h2>{[['PED-0268','Cartão de visita · Studio Amora','Impressão',68],['PED-0267','Embalagem kraft · Café Aurora','Acabamento',86],['PED-0265','Folder A4 · Clínica Horizonte','Pré-impressão',32]].map(o => <div className="order" key={o[0]}><Printer/><div><b>{o[1]}</b><small>{o[0]} · registro ilustrativo</small><div className="bar"><i style={{width:o[3]+'%'}}/></div></div><span>{o[2]}</span></div>)}<small>Dados de exemplo — não representam operação real.</small></section><section className="panel capacity"><small>CAPACIDADE</small><h2>Ritmo da produção</h2><strong>78%</strong><p>Indicador ilustrativo</p><div className="notice">Conecte o banco próprio para ativar os indicadores reais.</div></section></div><div className="columns lower"><section className="panel"><small>AGENDA</small><h2>Próximas entregas</h2><p>08 NOV　 Cartões Studio Amora</p><p>09 NOV　 Folders Clínica Horizonte</p></section><section className="panel"><small>ATALHOS</small><h2>Acesso rápido</h2><div className="shortcuts"><button onClick={() => setPage('Orçamentos')}>Orçamentos</button><button onClick={() => setPage('Engenharia gráfica')}>Ficha técnica</button><button onClick={() => setPage('Chão de gráfica')}>Apontar produção</button><button onClick={() => setPage('Financeiro')}>Financeiro</button></div></section></div><footer>PRISMAPRES · Gestão inteligente para o universo da impressão. <span>Fundação visual 0.1.0</span></footer></>} </article></main></div>
+}
+
+
+class AppErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  state = { hasError: false }
+
+  static getDerivedStateFromError() {
+    return { hasError: true }
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error('[PRISMAPRES] Falha inesperada na interface:', error, info.componentStack)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <main className="app-error" role="alert">
+          <div className="app-error-card">
+            <div className="brand"><Command /> PRISMA<span>PRES</span></div>
+            <small>RECUPERAÇÃO DO SISTEMA</small>
+            <h1>Não foi possível carregar esta tela.</h1>
+            <p>Ocorreu uma falha inesperada na interface. Tente recarregar a aplicação.</p>
+            <button className="primary" onClick={() => window.location.reload()}>Recarregar PRISMAPRES</button>
+          </div>
+        </main>
+      )
+    }
+    return this.props.children
+  }
+}
+
+export default function App() {
+  return <AppErrorBoundary><AppContent /></AppErrorBoundary>
 }
