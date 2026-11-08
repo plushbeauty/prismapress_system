@@ -1,4 +1,4 @@
-import { ArrowDownRight, ArrowRight, ArrowUpRight, CalendarDays, Check, ClipboardList, Factory, FileText, Plus, Printer, ReceiptText, Users, Wallet, Zap } from "lucide-react";
+import { ArrowDownRight, ArrowRight, ArrowUpRight, CalendarDays, Check, ClipboardList, Factory, FileText, Plus, ReceiptText, Users, Wallet, Zap } from "lucide-react";
 import "./DashboardPage.css";
 
 type DashboardPageProps = { onNavigate: (page: string) => void };
@@ -26,7 +26,6 @@ const stages = [
   { label: "Pronto", count: 1, color: "stage-muted" },
 ];
 
-const money = (value: number) => "R$ " + value.toLocaleString("pt-BR") + " mil";
 
 export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   const today = new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" }).format(new Date());
