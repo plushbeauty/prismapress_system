@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ArrowDownRight, ArrowRight, ArrowUpRight, CalendarDays, Check, ClipboardList, Factory, FileText, Plus, ReceiptText, Users, Wallet, Zap } from "lucide-react";
 import "./DashboardPage.css";
 
@@ -28,6 +29,9 @@ const stages = [
 
 
 export default function DashboardPage({ onNavigate }: DashboardPageProps) {
+  // REVISAO 2026-11-09 · Dashboard adaptado do layout enviado; shell, rotas e integrações existentes preservados.
+  const [invoiceFilter, setInvoiceFilter] = useState<"Todas" | "A receber" | "A pagar">("Todas");
+  const visibleInvoices = invoices.filter(invoice => invoiceFilter === "Todas" || invoice.kind === invoiceFilter);
   const today = new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" }).format(new Date());
   return (
     <div className="dashboard-page">
@@ -41,7 +45,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
         <div className="dashboard-hero-art" aria-hidden="true"><span>CMYK</span><i/><i/><i/></div>
       </section>
 
-      <div className="dashboard-demo-note">PAINEL DEMONSTRATIVO · Os valores e registros abaixo são ilustrativos e ainda não vêm do banco de dados.</div>
+      <div className="dashboard-demo-note"><strong>REVISÃO 09/11/2026 · DASHBOARD</strong> · Painel visual adaptado do layout enviado. Indicadores e registros permanecem identificados como demonstrativos até a conexão com dados reais.</div>
 
       <section className="dashboard-kpis">
         {[
@@ -71,8 +75,8 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
 
         <article className="dashboard-panel dashboard-invoices">
           <div className="dashboard-panel-heading"><div><small>ROTINA FISCAL</small><h3>Notas fiscais</h3></div><button className="dashboard-text-action" onClick={() => onNavigate("Fiscal")}>Ver módulo <ArrowRight size={14}/></button></div>
-          <div className="invoice-tabs"><span className="active">Todas</span><span>A receber</span><span>A pagar</span></div>
-          <div className="invoice-list">{invoices.map(invoice => <div className="invoice-row" key={invoice.number}><div><b>{invoice.number}</b><small>{invoice.client}</small></div><strong>{invoice.amount}</strong><span className={invoice.kind === "A receber" ? "invoice-receive" : "invoice-pay"}>{invoice.kind}</span></div>)}</div>
+          <div className="invoice-tabs" role="group" aria-label="Filtrar notas demonstrativas">{(["Todas", "A receber", "A pagar"] as const).map(filter => <button type="button" key={filter} aria-pressed={invoiceFilter === filter} className={invoiceFilter === filter ? "active" : ""} onClick={() => setInvoiceFilter(filter)}>{filter}</button>)}</div>
+          <div className="invoice-list">{visibleInvoices.map(invoice => <div className="invoice-row" key={invoice.number}><div><b>{invoice.number}</b><small>{invoice.client}</small></div><strong>{invoice.amount}</strong><span className={invoice.kind === "A receber" ? "invoice-receive" : "invoice-pay"}>{invoice.kind}</span></div>)}</div>
           <p className="dashboard-chart-caption">Nenhuma nota fiscal real foi consultada.</p>
         </article>
       </section>
