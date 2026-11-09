@@ -12,7 +12,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { ArrowDownRight, ArrowRight, ArrowUpRight, CalendarDays, Check, ClipboardList, Factory, FileText, LoaderCircle, Plus, ReceiptText, RefreshCw, Users, Wallet, Zap } from 'lucide-react'
 import { supabase } from '../../lib/supabaseClient'
 import { useSession } from '../../contexts/SessionContext'
-import type { Cliente, NotaFiscal, OrdemServico, Pedido, TituloFinanceiro } from '../../lib/types'
+import type { Cliente, NotaFiscal, OrdemServico, Orcamento, Pedido, TituloFinanceiro } from '../../lib/types'
 import './DashboardPage.css'
 
 type DashboardPageProps = { onNavigate: (page: string) => void }
@@ -32,6 +32,7 @@ const stageInfo = [
 export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   const { empresa, perfil } = useSession()
   const [pedidos, setPedidos] = useState<Pedido[]>([])
+  const [orcamentos, setOrcamentos] = useState<Orcamento[]>([])
   const [ordens, setOrdens] = useState<OrdemServico[]>([])
   const [titulos, setTitulos] = useState<TituloFinanceiro[]>([])
   const [notas, setNotas] = useState<NotaFiscal[]>([])
@@ -53,6 +54,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
     setError(null)
     const results = await Promise.all([
       supabase.from('gr_pedidos').select('*').eq('empresa_id', empresa.id),
+      supabase.from('gr_orcamentos').select('*').eq('empresa_id', empresa.id),
       supabase.from('gr_ordens_servico').select('*').eq('empresa_id', empresa.id),
       supabase.from('gr_titulos_financeiros').select('*').eq('empresa_id', empresa.id),
       supabase.from('gr_notas_fiscais').select('*').eq('empresa_id', empresa.id).order('emitida_em', { ascending: false }).limit(8),
@@ -81,7 +83,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   const received = monthTitles.filter(t => t.tipo === 'receber').reduce((sum, t) => sum + Number(t.valor || 0), 0)
   const paid = monthTitles.filter(t => t.tipo === 'pagar').reduce((sum, t) => sum + Number(t.valor || 0), 0)
   const receivable = titulos.filter(t => t.tipo === 'receber' && t.status === 'pendente').reduce((sum, t) => sum + Number(t.valor || 0), 0)
-  const pendingOrders = pedidos.filter(p => p.status === 'aberto').length
+  const waitingQuotes = orcamentos.filter(quote => quote.status === 'enviado').length
   const activeOrders = ordens.filter(o => o.status !== 'concluido' && o.status !== 'cancelado')
   const dueToday = ordens.filter(o => o.fim_previsto === todayISO && o.status !== 'concluido' && o.status !== 'cancelado').length
 
@@ -126,7 +128,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
 
       <section className="dashboard-kpis">
         {[
-          { title: 'Orçamentos / pedidos abertos', value: available.pedidos ? String(pendingOrders).padStart(2, '0') : '—', detail: 'Pedidos aguardando aprovação', Icon: FileText, tone: 'purple', target: 'Pedidos' },
+          { title: 'Orçamentos aguardando resposta', value: available.orcamentos ? String(waitingQuotes).padStart(2, '0') : '—', detail: 'Propostas enviadas ao cliente', Icon: FileText, tone: 'purple', target: 'Orçamentos' },
           { title: 'Ordens em produção', value: available.ordens ? String(activeOrders.length).padStart(2, '0') : '—', detail: 'Ordens não concluídas', Icon: Factory, tone: 'teal', target: 'Chão de gráfica' },
           { title: 'A receber', value: available.financeiro ? money(receivable) : '—', detail: 'Títulos pendentes', Icon: Wallet, tone: 'orange', target: 'Financeiro' },
           { title: 'Entregas previstas hoje', value: available.ordens ? String(dueToday).padStart(2, '0') : '—', detail: 'Ordens com prazo para hoje', Icon: CalendarDays, tone: 'pink', target: 'Chão de gráfica' },
