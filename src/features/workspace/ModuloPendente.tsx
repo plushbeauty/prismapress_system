@@ -90,7 +90,7 @@ export default function ModuloPendente({ page, onBack }: { page: string; onBack:
       </div>
       <section className="workspace-table-panel">
         <div className="workspace-table-top"><div><small>MAPA DE TELAS</small><h3>Telas previstas para este módulo</h3></div></div>
-        <ul className="pending-page-list">{mod.pages.map(item => <li key={item.route} className="pending-page-item"><strong className="block text-[11px] text-[#51476e]">{item.label}</strong><span className="font-mono text-[9px] text-[#9993a7]">{item.route}</span></li>)}</ul>
+        <ul className="pending-page-list">{mod.pages.map(item => <li key={item.route} className="pending-page-item"><strong >{item.label}</strong><span >{item.route}</span></li>)}</ul>
       </section>
     </div>
   )
