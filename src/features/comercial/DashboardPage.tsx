@@ -8,7 +8,7 @@
  * - Estados explícitos de carregamento, erro e ausência de dados.
  * @STATUS: APLICADO
  */
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { ArrowDownRight, ArrowRight, ArrowUpRight, CalendarDays, Check, ClipboardList, Factory, FileText, LoaderCircle, Plus, ReceiptText, RefreshCw, Users, Wallet, Zap } from 'lucide-react'
 import { supabase } from '../../lib/supabaseClient'
 import { useSession } from '../../contexts/SessionContext'
@@ -85,7 +85,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   const activeOrders = ordens.filter(o => o.status !== 'concluido' && o.status !== 'cancelado')
   const dueToday = ordens.filter(o => o.fim_previsto === todayISO && o.status !== 'concluido' && o.status !== 'cancelado').length
 
-  const chart = useMemo<ChartPoint[]>(() => Array.from({ length: 6 }, (_, index) => {
+  const chart: ChartPoint[] = Array.from({ length: 6 }, (_, index) => {
     const date = new Date(today.getFullYear(), today.getMonth() - 5 + index, 1)
     const key = monthKey(date)
     const rows = titulos.filter(t => t.vencimento.slice(0, 7) === key)
@@ -94,7 +94,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
       incoming: rows.filter(t => t.tipo === 'receber').reduce((sum, t) => sum + Number(t.valor || 0), 0) / 1000,
       outgoing: rows.filter(t => t.tipo === 'pagar').reduce((sum, t) => sum + Number(t.valor || 0), 0) / 1000,
     }
-  }), [titulos])
+  })
   const maxChart = Math.max(10, ...chart.flatMap(point => [point.incoming, point.outgoing]))
   const currentChart = chart[activeMonth] ?? chart[5]
   const filteredInvoices = notas.filter(n => {
@@ -104,7 +104,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   const stages = stageInfo.map(stage => ({ ...stage, count: stage.id === 'concluido' ? ordens.filter(o => o.status === 'concluido').length : activeOrders.filter(o => o.etapa === stage.id).length }))
   const greeting = perfil?.nome ? perfil.nome.split(' ')[0] : 'Sua equipe'
   const formattedToday = new Intl.DateTimeFormat('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }).format(today)
-  const invoiceClient = (note: NotaFiscal) => clientes.find(client => client.id === (note.tipo === 'saida' ? note.cliente_id : note.fornecedor_id))?.nome ?? (note.tipo === 'saida' ? 'Cliente' : 'Fornecedor')
+  const invoiceClient = (note: NotaFiscal) => note.tipo === 'saida' ? clientes.find(client => client.id === note.cliente_id)?.nome ?? 'Cliente' : 'Fornecedor'
 
   return (
     <div className="dashboard-page">
