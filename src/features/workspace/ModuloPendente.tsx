@@ -1,5 +1,4 @@
 import { ArrowLeft, CircleDashed, Database } from 'lucide-react'
-import type { ReactNode } from 'react'
 
 type PendingModule = {
   summary: string
@@ -78,20 +77,20 @@ export default function ModuloPendente({ page, onBack }: { page: string; onBack:
         <button className="workspace-primary" onClick={onBack}><ArrowLeft size={14}/> Voltar ao dashboard</button>
       </div>
       <div className="workspace-demo-alert"><Database size={15}/> IMPLEMENTAÇÃO PENDENTE <span>Esta tela não simula registros nem gravações.</span></div>
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div className="pending-grid">
         <section className="workspace-form">
           <div className="workspace-form-title"><div><small>ESCOPO APROVADO</small><h3>O que será entregue</h3></div></div>
-          <ul className="mt-4 grid gap-2">{mod.features.map(feature => <li key={feature} className="flex items-start gap-2 rounded-lg border border-[#eeedf3] bg-[#faf9fc] px-3 py-2 text-[11px] font-semibold text-[#51476e]"><CircleDashed size={13} className="mt-0.5 shrink-0 text-[#8e899c]"/>{feature}</li>)}</ul>
+          <ul className="pending-list">{mod.features.map(feature => <li key={feature} className="pending-item"><CircleDashed size={13} className="mt-0.5 shrink-0 text-[#8e899c]"/>{feature}</li>)}</ul>
         </section>
         <section className="workspace-form">
           <div className="workspace-form-title"><div><small>ESTADO DA ENTREGA</small><h3>Sem dados fictícios</h3></div></div>
-          <p className="mt-3 text-[11px] leading-relaxed text-[#716b83]">O menu e esta área de referência estão disponíveis. As telas operacionais e a persistência serão liberadas somente quando estiverem conectadas às tabelas próprias do PRISMAPRES no Supabase.</p>
-          <div className="mt-4 rounded-lg border border-[#e6e0fa] bg-[#f8f6ff] p-3 text-[10px] leading-relaxed text-[#725dc0]">Nenhum registro, indicador ou status de produção é inventado nesta visualização.</div>
+          <p className="pending-copy">O menu e esta área de referência estão disponíveis. As telas operacionais e a persistência serão liberadas somente quando estiverem conectadas às tabelas próprias do PRISMAPRES no Supabase.</p>
+          <div className="pending-callout">Nenhum registro, indicador ou status de produção é inventado nesta visualização.</div>
         </section>
       </div>
       <section className="workspace-table-panel">
         <div className="workspace-table-top"><div><small>MAPA DE TELAS</small><h3>Telas previstas para este módulo</h3></div></div>
-        <ul className="grid gap-2 px-4 pb-4 sm:grid-cols-2">{mod.pages.map(item => <li key={item.route} className="rounded-lg border border-[#eeedf3] px-3 py-2"><strong className="block text-[11px] text-[#51476e]">{item.label}</strong><span className="font-mono text-[9px] text-[#9993a7]">{item.route}</span></li>)}</ul>
+        <ul className="pending-page-list">{mod.pages.map(item => <li key={item.route} className="pending-page-item"><strong className="block text-[11px] text-[#51476e]">{item.label}</strong><span className="font-mono text-[9px] text-[#9993a7]">{item.route}</span></li>)}</ul>
       </section>
     </div>
   )
