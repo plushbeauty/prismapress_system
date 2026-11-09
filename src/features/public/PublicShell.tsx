@@ -9,6 +9,7 @@ const links = [
   { href: '/#vantagens', label: 'Vantagens' },
   { href: '/#depoimentos', label: 'Depoimentos' },
   { href: '/#faq', label: 'FAQ' },
+  { href: '/#contato', label: 'Contato' },
 ]
 
 type PublicShellProps = {
@@ -18,7 +19,6 @@ type PublicShellProps = {
 
 export default function PublicShell({ children, onLogin }: PublicShellProps) {
   const [open, setOpen] = useState(false)
-
   const closeMenu = () => setOpen(false)
 
   return (
@@ -80,16 +80,16 @@ export default function PublicShell({ children, onLogin }: PublicShellProps) {
           <div>
             <b>Sistema</b>
             <a href="/#recursos">Módulos</a>
-            <a href="/#planos">Central de Custos</a>
+            <a href="/#recursos">Central de Custos</a>
             <a href="/#planos">Planos</a>
             <button type="button" onClick={onLogin}>Entrar</button>
           </div>
           <div>
             <b>Operação</b>
-            <a href="/#modulos">Comercial</a>
-            <a href="/#modulos">Produção</a>
-            <a href="/#modulos">Acabamento</a>
-            <a href="/#modulos">Montagem</a>
+            <a href="/#recursos">Comercial</a>
+            <a href="/#recursos">Produção</a>
+            <a href="/#recursos">Acabamento</a>
+            <a href="/#recursos">Montagem</a>
           </div>
           <div>
             <b>Contato</b>
