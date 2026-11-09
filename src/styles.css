@@ -185,3 +185,15 @@
 @media(max-width:1100px){.pp-benefit-strip{grid-template-columns:repeat(4,1fr)}.pp-plans{grid-template-columns:1fr;gap:30px}.pp-price-note{grid-column:1}.pp-section-heading h2 br{display:none}}
 @media(max-width:760px){.pp-hero{grid-template-columns:1fr;padding:55px 22px 35px;gap:20px}.pp-hero-art{height:330px}.pp-print-photo{width:min(94%,430px);height:270px}.pp-benefit-strip{grid-template-columns:repeat(2,minmax(0,1fr));padding:20px}.pp-plan-grid{grid-template-columns:1fr;gap:22px}.pp-plan{padding:25px}.pp-proof{grid-template-columns:1fr;gap:38px;padding:55px 22px}.pp-plans{padding:58px 18px}.pp-section-heading h2{font-size:34px}.pp-advantages h2{font-size:30px}}
 @media(max-width:420px){.pp-hero h1{font-size:42px}.pp-hero-actions{display:grid}.pp-button{width:100%}.pp-hero-art{height:285px}.pp-print-photo{height:230px}.pp-machine-body{height:150px}.pp-paper-feed{width:145px}.pp-benefit-strip{gap:7px;padding:16px 12px}.pp-benefit-strip article{gap:7px}.pp-benefit-strip small{font-size:7px}.pp-testimonial{padding:24px}.pp-testimonial blockquote{font-size:15px}}
+
+
+.pp-faq{padding:72px max(22px,calc((100vw - 1160px)/2));display:grid;grid-template-columns:.75fr 1.25fr;gap:65px;background:#f6fafb}
+.pp-faq h2{margin:14px 0;color:#123b50;font:800 clamp(29px,3.2vw,40px)/1.12 Manrope;letter-spacing:-.05em}
+.pp-faq>div:first-child>p{color:#708792;font-size:11px;line-height:1.8}
+.pp-faq-list details{padding:17px 2px;border-bottom:1px solid #dce8ed}
+.pp-faq-list summary{cursor:pointer;color:#244b5e;font-size:12px;font-weight:800;list-style:none}
+.pp-faq-list summary::-webkit-details-marker{display:none}
+.pp-faq-list summary:after{content:'+';float:right;color:#2d8db8;font-size:17px}
+.pp-faq-list details[open] summary:after{content:'−'}
+.pp-faq-list details p{max-width:650px;margin:12px 25px 0 0;color:#718792;font-size:10px;line-height:1.8}
+@media(max-width:760px){.pp-faq{grid-template-columns:1fr;gap:20px;padding:52px 22px}}
