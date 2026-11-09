@@ -12,7 +12,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { ArrowDownRight, ArrowRight, ArrowUpRight, CalendarDays, Check, ClipboardList, Factory, FileText, LoaderCircle, Plus, ReceiptText, RefreshCw, Users, Wallet, Zap } from 'lucide-react'
 import { supabase } from '../../lib/supabaseClient'
 import { useSession } from '../../contexts/SessionContext'
-import type { Cliente, NotaFiscal, OrdemServico, Orcamento, Pedido, TituloFinanceiro } from '../../lib/types'
+import type { Cliente, NotaFiscal, OrdemServico, Orcamento, TituloFinanceiro } from '../../lib/types'
 import './DashboardPage.css'
 
 type DashboardPageProps = { onNavigate: (page: string) => void }
@@ -31,7 +31,6 @@ const stageInfo = [
 
 export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   const { empresa, perfil } = useSession()
-  const [pedidos, setPedidos] = useState<Pedido[]>([])
   const [orcamentos, setOrcamentos] = useState<Orcamento[]>([])
   const [ordens, setOrdens] = useState<OrdemServico[]>([])
   const [titulos, setTitulos] = useState<TituloFinanceiro[]>([])
@@ -53,7 +52,6 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
     if (silent) setRefreshing(true); else setLoading(true)
     setError(null)
     const results = await Promise.all([
-      supabase.from('gr_pedidos').select('*').eq('empresa_id', empresa.id),
       supabase.from('gr_orcamentos').select('*').eq('empresa_id', empresa.id),
       supabase.from('gr_ordens_servico').select('*').eq('empresa_id', empresa.id),
       supabase.from('gr_titulos_financeiros').select('*').eq('empresa_id', empresa.id),
@@ -65,7 +63,6 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
     setAvailable(flags)
     const failures = results.flatMap((result, index) => result.error ? [`${['Pedidos', 'Produção', 'Financeiro', 'Notas fiscais', 'Clientes'][index]}: ${result.error.message}`] : [])
     if (failures.length) setError(failures.join(' · '))
-    if (!p.error) setPedidos((p.data ?? []) as Pedido[])
     if (!o.error) setOrdens((o.data ?? []) as OrdemServico[])
     if (!t.error) setTitulos((t.data ?? []) as TituloFinanceiro[])
     if (!n.error) setNotas((n.data ?? []) as NotaFiscal[])
