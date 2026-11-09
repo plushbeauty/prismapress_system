@@ -256,3 +256,38 @@
 @media print { .no-print{display:none!important}body{background:#fff}.pr-sheet{width:auto;min-height:0;padding:0;box-shadow:none} }
 @media(max-width:1024px){.pr-btn,.pr-input,.pr-select{height:34px}}
 @media(max-width:640px){.pr-btn,.pr-input,.pr-select{height:38px}}
+
+/* PRISMAPRES-ERP-20261109-007 — acessibilidade e comportamento global */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply font-sans antialiased text-slate-700 bg-surface;
+}
+
+::selection {
+  @apply bg-brand-blue/20 text-navy-900;
+}
+
+:focus-visible {
+  outline: 2px solid #1e88e7;
+  outline-offset: 2px;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
