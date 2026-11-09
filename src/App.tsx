@@ -4,6 +4,7 @@ import DashboardPage from './features/comercial/DashboardPage'
 import BlogPage from './features/comercial/BlogPage'
 import WorkspaceModule from './features/workspace/WorkspaceModule'
 import './features/comercial/PlanosPage.css'
+import PublicShell from './features/public/PublicShell'
 import { ArrowUpRight, Bell, BookOpen, Boxes, CheckCircle2, ChevronDown, ClipboardList, Command, Factory, FileText, LayoutDashboard, Palette, Plus, Printer, Search, Settings2, ShoppingCart, Truck, Users, Wallet, Sparkles } from 'lucide-react'
 
 const groups = [
@@ -20,12 +21,8 @@ const groups = [
 
 function PublicHome({ onLogin }: { onLogin: () => void }) {
   return (
+    <PublicShell onLogin={onLogin}>
     <main className="public-home">
-      <header className="public-header">
-        <a className="brand public-brand" href="#inicio"><Command /> PRISMA<span>PRES</span></a>
-        <nav><a href="#beneficios">Recursos</a><a href="#planos">Planos</a><a href="#sobre">Sobre</a></nav>
-        <button className="public-login" onClick={onLogin}>Acessar sistema <ArrowUpRight size={16}/></button>
-      </header>
       <section className="public-hero" id="inicio">
         <div className="public-hero-copy">
           <span className="public-eyebrow"><Sparkles size={14}/> GESTÃO INTELIGENTE PARA O UNIVERSO DA IMPRESSÃO</span>
@@ -39,14 +36,14 @@ function PublicHome({ onLogin }: { onLogin: () => void }) {
           <div className="visual-chip"><CheckCircle2 size={16}/> Tudo conectado em um só lugar</div>
         </div>
       </section>
-      <section className="public-benefits" id="beneficios">
+      <section className="public-benefits" id="modulos">
         <div><small>UMA PLATAFORMA COMPLETA</small><h2>Mais controle para criar.<br/>Mais tempo para crescer.</h2></div>
         <div className="benefit-grid"><article><ClipboardList/><b>Comercial</b><p>Orçamentos, clientes e pedidos em um fluxo organizado.</p></article><article><Printer/><b>Produção gráfica</b><p>Fichas técnicas, etapas, máquinas e acompanhamento.</p></article><article><Palette/><b>Engenharia gráfica</b><p>Materiais, formatos, cores e especificações de impressão.</p></article><article><Wallet/><b>Gestão</b><p>Estoque e visão financeira para decidir com segurança.</p></article></div>
       </section>
       <section className="public-plans" id="planos"><PlanosPage /></section>
-      <section className="public-about" id="sobre"><div><small>PRISMAPRES</small><h2>Gestão inteligente para o universo da impressão.</h2><p>Uma experiência simples e integrada para acompanhar cada etapa do trabalho gráfico.</p></div><button className="public-cta" onClick={onLogin}>Acessar minha conta <ArrowUpRight size={17}/></button></section>
-      <footer className="public-footer"><a className="brand" href="#inicio"><Command/> PRISMA<span>PRES</span></a><span>© 2026 PRISMAPRES · Gestão inteligente para o universo da impressão.</span><a href="#planos">Ver planos</a></footer>
+      <section className="public-about" id="fluxo"><div><small>PRISMAPRES</small><h2>Gestão inteligente para o universo da impressão.</h2><p>Uma experiência simples e integrada para acompanhar cada etapa do trabalho gráfico.</p></div><button className="public-cta" onClick={onLogin}>Acessar minha conta <ArrowUpRight size={17}/></button></section>
     </main>
+    </PublicShell>
   )
 }
 
