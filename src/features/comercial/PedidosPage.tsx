@@ -1,7 +1,7 @@
 /*
- * @REVISAO: PRISMAPRES-ERP-20261109-004
+ * @REVISAO: PRISMAPRES-ERP-20261109-006
  * @DATA: 2026-11-09
- * @ALTERACOES: Fila de pedidos por setor; importação .eml/.txt; parser; aprovação e geração de OP.
+ * @ALTERACOES: Corrigido parser de campos multilinha de e-mail; fila por setor, importação .eml/.txt, aprovação e geração de OP.
  * @STATUS: APLICADO
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -16,7 +16,7 @@ const money=(n:number)=>new Intl.NumberFormat('pt-BR',{style:'currency',currency
 const date=(s:string|null)=>s?new Date(s+'T12:00:00').toLocaleDateString('pt-BR'):'Sem prazo'
 const parse=(raw:string):Parsed|null=>{
  const clean=raw.replace(/\r/g,'')
- const field=(name:string)=>clean.match(new RegExp('^\\s*(?:'+name+')\\s*:\\s*(.+))?.[1]?.trim()??''
+ const field=(name:string)=>clean.match(new RegExp(`(?:^|\\n)\\s*(?:${name})\\s*:\\s*([^\\n]+)`,'i'))?.[1]?.trim()??''
  const cliente=field('Cliente')
  const produto=field('Produto|Serviço|Item')
  if(!cliente||!produto)return null
