@@ -1,11 +1,9 @@
 import { Component, useState, type ErrorInfo, type ReactNode } from 'react'
-import PlanosPage from './features/comercial/PlanosPage'
 import DashboardPage from './features/comercial/DashboardPage'
 import BlogPage from './features/comercial/BlogPage'
 import WorkspaceModule from './features/workspace/WorkspaceModule'
-import './features/comercial/PlanosPage.css'
 import PublicShell from './features/public/PublicShell'
-import { ArrowUpRight, Bell, BookOpen, Boxes, CheckCircle2, ChevronDown, ClipboardList, Command, Factory, FileText, LayoutDashboard, Palette, Plus, Printer, Search, Settings2, ShoppingCart, Truck, Users, Wallet, Sparkles } from 'lucide-react'
+import { ArrowUpRight, Bell, BookOpen, Boxes, Check, CheckCircle2, ChevronDown, ClipboardList, Command, Factory, FileText, LayoutDashboard, Palette, Plus, Printer, Search, Settings2, ShoppingCart, Truck, Users, Wallet, Sparkles, Calculator, PackageCheck, Receipt, ShieldCheck, Cog, Headset, RefreshCw, LockKeyhole, Quote, Star } from 'lucide-react'
 
 const groups = [
   { name: 'WORKSPACE', items: [['Visão geral', LayoutDashboard]] },
@@ -20,43 +18,65 @@ const groups = [
 ] as const
 
 function PublicHome({ onLogin }: { onLogin: () => void }) {
+  const benefits = [
+    { Icon: Calculator, title: 'Controle de Custos', copy: 'Saiba quanto custa produzir cada trabalho.' },
+    { Icon: Factory, title: 'Gestão da Produção', copy: 'Acompanhe ordens, etapas e prazos.' },
+    { Icon: ClipboardList, title: 'Orçamentos Inteligentes', copy: 'Organize propostas e transforme em pedidos.' },
+    { Icon: PackageCheck, title: 'Estoque Integrado', copy: 'Controle materiais e insumos da gráfica.' },
+    { Icon: Wallet, title: 'Financeiro Completo', copy: 'Tenha visão clara de entradas e saídas.' },
+    { Icon: Receipt, title: 'Notas Fiscais', copy: 'Prepare sua operação para uma rotina fiscal integrada.' },
+    { Icon: ShieldCheck, title: 'Segurança Avançada', copy: 'Acesso organizado e proteção das informações.' },
+  ]
+  const plans = [
+    { name: 'Básico', price: '99,90', features: ['Gestão de orçamentos', 'Controle de estoque', 'Financeiro básico', 'Suporte por e-mail'] },
+    { name: 'Profissional', price: '149,90', popular: true, features: ['Tudo do Plano Básico', 'Central de Custos Avançada', 'Produção e PCP Integrado', 'Suporte Prioritário'] },
+    { name: 'Enterprise', price: '249,90', features: ['Tudo do Plano Profissional', 'Relatórios Personalizados', 'Integrações Especiais', 'Suporte Dedicado'] },
+  ]
+  const advantages = [
+    { Icon: Cog, title: 'Tecnologia de Ponta', copy: 'Uma plataforma moderna para conectar a operação.' },
+    { Icon: Headset, title: 'Suporte Especializado', copy: 'Apoio próximo para a rotina da sua gráfica.' },
+    { Icon: RefreshCw, title: 'Atualizações Constantes', copy: 'Evolução contínua da plataforma.' },
+    { Icon: LockKeyhole, title: 'Segurança Garantida', copy: 'Estrutura pensada para proteger seus dados.' },
+  ]
   return (
     <PublicShell onLogin={onLogin}>
-    <main className="public-home">
-      <section className="public-hero" id="inicio">
-        <div className="public-hero-copy">
-          <span className="public-eyebrow"><Sparkles size={14}/> GESTÃO INTELIGENTE PARA O UNIVERSO DA IMPRESSÃO</span>
-          <h1>Sua gráfica merece<br/><em>uma nova dimensão.</em></h1>
-          <p>Orçamentos, pedidos, produção e gestão conectados em uma plataforma criada para simplificar o dia a dia de gráficas e empresas de impressão.</p>
-          <div className="public-actions"><a href="#planos" className="public-cta">Conhecer planos <ArrowUpRight size={17}/></a><button onClick={onLogin} className="public-secondary">Já tenho acesso</button></div>
-          <small>Uma operação mais organizada. Do primeiro orçamento à entrega.</small>
-        </div>
-        <div className="public-visual" aria-label="Painel visual do PRISMAPRES">
-          <div className="visual-sheet sheet-back"></div><div className="visual-sheet sheet-front"><div className="sheet-top">PRISMAPRES <span>PRINT MANAGEMENT</span></div><div className="sheet-art"><i/><i/><i/></div><b>IDEIAS QUE<br/>GANHAM FORMA.</b><small>IMPRESSÃO · CRIATIVIDADE · GESTÃO</small></div>
-          <div className="visual-chip"><CheckCircle2 size={16}/> Tudo conectado em um só lugar</div>
-        </div>
-      </section>
-      <section className="public-benefits" id="modulos">
-        <div><small>UMA PLATAFORMA COMPLETA</small><h2>Mais controle para criar.<br/>Mais tempo para crescer.</h2></div>
-        <div className="benefit-grid"><article><ClipboardList/><b>Comercial</b><p>Orçamentos, clientes e pedidos em um fluxo organizado.</p></article><article><Printer/><b>Produção gráfica</b><p>Fichas técnicas, etapas, máquinas e acompanhamento.</p></article><article><Palette/><b>Engenharia gráfica</b><p>Materiais, formatos, cores e especificações de impressão.</p></article><article><Wallet/><b>Gestão</b><p>Estoque e visão financeira para decidir com segurança.</p></article></div>
-      </section>
-      <section className="public-costs" id="custos">
-        <div>
-          <small>FORMAÇÃO DE PREÇO COM RASTREABILIDADE</small>
-          <h2>Central de Custos</h2>
-          <p>O escopo conecta materiais, processos, tempo de produção, acabamentos e perdas para apoiar a formação do preço de cada trabalho gráfico.</p>
-          <span className="public-costs-status">Módulo em estruturação · sem indicadores ou valores simulados</span>
-        </div>
-        <div className="public-costs-steps" aria-label="Etapas previstas para a central de custos">
-          <span><b>01</b> Materiais e insumos</span>
-          <span><b>02</b> Processos e tempo</span>
-          <span><b>03</b> Acabamentos e perdas</span>
-          <span><b>04</b> Custo e margem do trabalho</span>
-        </div>
-      </section>
-      <section className="public-plans" id="planos"><PlanosPage /></section>
-      <section className="public-about" id="fluxo"><div><small>PRISMAPRES</small><h2>Gestão inteligente para o universo da impressão.</h2><p>Uma experiência simples e integrada para acompanhar cada etapa do trabalho gráfico.</p></div><button className="public-cta" onClick={onLogin}>Acessar minha conta <ArrowUpRight size={17}/></button></section>
-    </main>
+      <main className="public-home">
+        <section className="pp-hero" id="inicio">
+          <div className="pp-hero-copy">
+            <span className="pp-eyebrow"><span/> SISTEMA DE GESTÃO PARA GRÁFICAS</span>
+            <h1>Sua gráfica mais <em>produtiva</em> e lucrativa.</h1>
+            <p>Tenha o controle de toda a sua operação em um só lugar. Do orçamento à produção, do estoque ao financeiro: gestão simples para sua gráfica crescer.</p>
+            <div className="pp-hero-actions"><a className="pp-button pp-button-primary" href="#planos">Conheça os Planos <ArrowUpRight size={17}/></a><a className="pp-button pp-button-outline" href="#recursos">Ver Demonstração <ArrowUpRight size={17}/></a></div>
+            <div className="pp-trust"><CheckCircle2 size={16}/> Mais organização, produtividade e controle no dia a dia.</div>
+          </div>
+          <div className="pp-hero-art" role="img" aria-label="Composição gráfica com impressora industrial e cores de impressão">
+            <div className="pp-cmyk pp-cyan"/><div className="pp-cmyk pp-magenta"/><div className="pp-cmyk pp-yellow"/>
+            <div className="pp-print-photo"><div className="pp-machine-top"><span/><span/><span/></div><div className="pp-machine-body"><div className="pp-machine-screen"><i/><i/><i/></div><div className="pp-paper-feed"><b/><b/><b/><b/></div><div className="pp-machine-label">INDUSTRIAL PRINT SYSTEM</div></div><div className="pp-paper-output"/></div>
+            <div className="pp-art-caption"><Printer size={15}/> IMPRESSÃO COM CONTROLE TOTAL</div>
+          </div>
+        </section>
+        <section className="pp-benefit-strip" id="recursos">
+          {benefits.map(({Icon,title,copy}) => <article key={title}><span><Icon size={20}/></span><div><b>{title}</b><small>{copy}</small></div></article>)}
+        </section>
+        <section className="pp-plans" id="planos">
+          <div className="pp-section-heading"><span className="pp-eyebrow">NOSSOS PLANOS</span><h2>Escolha o plano ideal<br/>para sua gráfica.</h2><p>Comece com o essencial e evolua conforme sua operação cresce.</p><a href="mailto:comercial@prismapres.com.br" className="pp-specialist">Fale com um especialista <ArrowUpRight size={16}/></a></div>
+          <div className="pp-plan-grid">{plans.map(plan => <article className={plan.popular ? 'pp-plan pp-plan-popular' : 'pp-plan'} key={plan.name}>
+            {plan.popular && <span className="pp-popular">MAIS POPULAR</span>}
+            <h3>{plan.name}</h3><p className="pp-plan-intro">{plan.name === 'Básico' ? 'Para organizar o essencial.' : plan.name === 'Profissional' ? 'Para acelerar sua produção.' : 'Para operações que precisam ir além.'}</p>
+            <div className="pp-price"><small>R$</small><strong>{plan.price}</strong><small>/mês</small></div>
+            <a href="mailto:comercial@prismapres.com.br" className={plan.popular ? 'pp-button pp-button-primary' : 'pp-button pp-button-outline'}>Tenho interesse <ArrowUpRight size={15}/></a>
+            <div className="pp-plan-divider"/>
+            <b className="pp-includes">O que está incluído</b>
+            <ul>{plan.features.map(feature => <li key={feature}><Check size={15}/>{feature}</li>)}</ul>
+          </article>)}</div>
+          <p className="pp-price-note">Planos apresentados como referência comercial. Consulte condições, disponibilidade e contratação com nossa equipe.</p>
+        </section>
+        <section className="pp-proof" id="depoimentos">
+          <div className="pp-testimonial"><div className="pp-quote-icon"><Quote size={22}/></div><div className="pp-stars">{[1,2,3,4,5].map(n=><Star key={n} size={14} fill="currentColor"/>)}</div><blockquote>“O PRISMAPRES transformou nossa gráfica. Com o sistema, controlamos nossos custos, entregamos mais rápido e aumentamos nosso faturamento.”</blockquote><div className="pp-person"><div className="pp-person-avatar">MS</div><div><b>Mariana Silva</b><small>Proprietária · Gráfica Expansão</small></div></div></div>
+          <div className="pp-advantages" id="vantagens"><span className="pp-eyebrow">FEITO PARA A ROTINA GRÁFICA</span><h2>Por que escolher o PRISMAPRES?</h2>{advantages.map(({Icon,title,copy})=><article key={title}><span><Icon size={19}/></span><div><b>{title}</b><small>{copy}</small></div></article>)}</div>
+        </section>
+        <section className="pp-final-cta" id="faq"><div className="pp-final-cmyk"><i/><i/><i/></div><span className="pp-eyebrow">SUA GRÁFICA PODE IR MAIS LONGE</span><h2>Pronto para levar sua gráfica<br/>para o próximo nível?</h2><p>Comece agora mesmo e conheça o PRISMAPRES.</p><button className="pp-button pp-button-orange" onClick={onLogin}>Criar Minha Conta <ArrowUpRight size={17}/></button></section>
+      </main>
     </PublicShell>
   )
 }
