@@ -3,7 +3,7 @@ import DashboardPage from './features/comercial/DashboardPage'
 import BlogPage from './features/comercial/BlogPage'
 import WorkspaceModule from './features/workspace/WorkspaceModule'
 import PublicShell from './features/public/PublicShell'
-import { ArrowUpRight, Bell, BookOpen, Boxes, Check, CheckCircle2, ChevronDown, ClipboardList, Command, Factory, FileText, LayoutDashboard, Palette, Plus, Printer, Search, Settings2, ShoppingCart, Truck, Users, Wallet, Sparkles, Calculator, PackageCheck, Receipt, ShieldCheck, Cog, Headset, RefreshCw, LockKeyhole, Quote, Star } from 'lucide-react'
+import { ArrowUpRight, Bell, BookOpen, Boxes, Check, CheckCircle2, ChevronDown, ClipboardList, Command, Factory, FileText, LayoutDashboard, Palette, Plus, Printer, Search, Settings2, ShoppingCart, Truck, Users, Wallet, Calculator, PackageCheck, Receipt, ShieldCheck, Cog, Headset, RefreshCw, LockKeyhole, Quote, Star } from 'lucide-react'
 
 const groups = [
   { name: 'WORKSPACE', items: [['Visão geral', LayoutDashboard]] },
