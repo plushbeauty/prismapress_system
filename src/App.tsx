@@ -40,6 +40,20 @@ function PublicHome({ onLogin }: { onLogin: () => void }) {
         <div><small>UMA PLATAFORMA COMPLETA</small><h2>Mais controle para criar.<br/>Mais tempo para crescer.</h2></div>
         <div className="benefit-grid"><article><ClipboardList/><b>Comercial</b><p>Orçamentos, clientes e pedidos em um fluxo organizado.</p></article><article><Printer/><b>Produção gráfica</b><p>Fichas técnicas, etapas, máquinas e acompanhamento.</p></article><article><Palette/><b>Engenharia gráfica</b><p>Materiais, formatos, cores e especificações de impressão.</p></article><article><Wallet/><b>Gestão</b><p>Estoque e visão financeira para decidir com segurança.</p></article></div>
       </section>
+      <section className="public-costs" id="custos">
+        <div>
+          <small>FORMAÇÃO DE PREÇO COM RASTREABILIDADE</small>
+          <h2>Central de Custos</h2>
+          <p>O escopo conecta materiais, processos, tempo de produção, acabamentos e perdas para apoiar a formação do preço de cada trabalho gráfico.</p>
+          <span className="public-costs-status">Módulo em estruturação · sem indicadores ou valores simulados</span>
+        </div>
+        <div className="public-costs-steps" aria-label="Etapas previstas para a central de custos">
+          <span><b>01</b> Materiais e insumos</span>
+          <span><b>02</b> Processos e tempo</span>
+          <span><b>03</b> Acabamentos e perdas</span>
+          <span><b>04</b> Custo e margem do trabalho</span>
+        </div>
+      </section>
       <section className="public-plans" id="planos"><PlanosPage /></section>
       <section className="public-about" id="fluxo"><div><small>PRISMAPRES</small><h2>Gestão inteligente para o universo da impressão.</h2><p>Uma experiência simples e integrada para acompanhar cada etapa do trabalho gráfico.</p></div><button className="public-cta" onClick={onLogin}>Acessar minha conta <ArrowUpRight size={17}/></button></section>
     </main>
