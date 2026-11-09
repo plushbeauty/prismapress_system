@@ -1,4 +1,5 @@
-import { Component, useState, type ErrorInfo, type ReactNode } from 'react'
+import { Component, useEffect, useState, type ErrorInfo, type ReactNode } from 'react'
+import { useSession } from './contexts/SessionContext'
 import DashboardPage from './features/comercial/DashboardPage'
 import BlogPage from './features/comercial/BlogPage'
 import WorkspaceModule from './features/workspace/WorkspaceModule'
@@ -83,17 +84,28 @@ function PublicHome({ onLogin }: { onLogin: () => void }) {
 }
 
 function AppContent() {
+  const { session, loading: authLoading, perfil, dbReady, error: authError, signIn, signOut } = useSession()
+  const [authMessage, setAuthMessage] = useState<string | null>(null)
   const [mode, setMode] = useState<'home' | 'login' | 'app'>('home')
   const [page, setPage] = useState('Visão geral')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
+  useEffect(() => {
+    if (!authLoading && session && dbReady) setMode('app')
+    if (!authLoading && !session && mode === 'app') setMode('login')
+  }, [authLoading, session, dbReady, mode])
+
   if (mode === 'home') return <PublicHome onLogin={() => setMode('login')} />
 
   if (mode === 'login') return <main className="login">
     <section className="visual"><div className="brand"><Command/> PRISMA<span>PRES</span></div><div><small>GESTÃO INTELIGENTE PARA GRÁFICAS</small><h1>Sua gráfica.<br/><em>Em outra</em> dimensão.</h1><p>Da primeira ideia à entrega final: clareza, controle e criatividade em cada etapa da impressão.</p></div><div className="paper-art"><i/><i/><i/></div><footer>COMERCIAL · PRODUÇÃO · FINANCEIRO</footer></section>
-    <section className="access"><small>PRISMAPRES / PORTAL</small><form onSubmit={e => { e.preventDefault(); setMode('app') }}><label>BEM-VINDO DE VOLTA</label><h2>Acesse seu espaço.</h2><p>Entre para acompanhar sua operação gráfica.</p><span>E-mail de acesso</span><input type="email" placeholder="voce@suaempresa.com.br" value={email} onChange={e => setEmail(e.target.value)} required/><span>Senha</span><input type="password" placeholder="Sua senha" value={password} onChange={e => setPassword(e.target.value)} required/><button className="primary">Entrar no PRISMAPRES <ArrowUpRight size={17}/></button><button type="button" className="secondary" onClick={() => setMode('home')}>Voltar ao site</button><small className="disclaimer">Ambiente demonstrativo. A autenticação real será conectada ao Supabase exclusivo do PRISMAPRES.</small></form><footer>© 2026 PRISMAPRES</footer></section>
+    <section className="access"><small>PRISMAPRES / PORTAL</small><form onSubmit={async e => { e.preventDefault(); setAuthMessage(null); const result = await signIn(email, password); if (result.error) setAuthMessage(result.error) }}><label>BEM-VINDO DE VOLTA</label><h2>Acesse seu espaço.</h2><p>Entre para acompanhar sua operação gráfica.</p><span>E-mail de acesso</span><input type="email" placeholder="voce@suaempresa.com.br" value={email} onChange={e => setEmail(e.target.value)} required/><span>Senha</span><input type="password" placeholder="Sua senha" value={password} onChange={e => setPassword(e.target.value)} required/><button className="primary" disabled={authLoading}>{authLoading ? 'Verificando acesso...' : 'Entrar no PRISMAPRES'} <ArrowUpRight size={17}/></button>{(authMessage || authError) && <small role="alert" className="disclaimer">{authMessage || authError}</small>}{session && !dbReady && !authLoading && <small role="status" className="disclaimer">A sessão foi autenticada, mas o perfil da empresa ainda não está pronto.</small>}<button type="button" className="secondary" onClick={() => setMode('home')}>Voltar ao site</button><small className="disclaimer">Acesso protegido pelo Supabase exclusivo do PRISMAPRES.</small></form><footer>© 2026 PRISMAPRES</footer></section>
   </main>
+
+  if (authLoading || (session && !dbReady)) return <main className="login"><section className="access"><small>PRISMAPRES / PORTAL</small><div><h2>Validando seu acesso...</h2><p>{authError || 'Carregando perfil e empresa.'}</p><button className="secondary" onClick={() => setMode('login')}>Voltar ao login</button></div></section></main>
+
+  if (!session || !dbReady) return <main className="login"><section className="access"><small>PRISMAPRES / PORTAL</small><div><h2>Acesso necessário</h2><p>{authError || 'Entre com sua conta para acessar o workspace.'}</p><button className="primary" onClick={() => setMode('login')}>Ir para login</button></div></section></main>
 
   return (
     <div className="shell">
@@ -107,7 +119,8 @@ function AppContent() {
           </section>)}
         </nav>
         <button className="back-public" onClick={() => setMode('home')}>← Site público</button>
-        <div className="user">FS <span><b>Administrador</b><small>Gestor da gráfica</small></span></div>
+        <button className="back-public" onClick={() => void signOut()}>Sair da conta</button>
+        <div className="user">{(perfil?.nome || 'PP').slice(0, 2).toUpperCase()} <span><b>{perfil?.nome || 'Usuário'}</b><small>{perfil?.papel || 'Acesso autenticado'}</small></span></div>
       </aside>
       <main>
         <header>
