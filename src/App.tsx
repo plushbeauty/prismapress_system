@@ -3,6 +3,8 @@ import { useSession } from './contexts/SessionContext'
 import DashboardPage from './features/comercial/DashboardPage'
 import ClientesPage from './features/comercial/ClientesPage'
 import OrcamentosPage from './features/comercial/OrcamentosPage'
+import PedidosPage from './features/comercial/PedidosPage'
+import ProducaoPage from './features/producao/ProducaoPage'
 import BlogPage from './features/comercial/BlogPage'
 import WorkspaceModule from './features/workspace/WorkspaceModule'
 import PublicShell from './features/public/PublicShell'
@@ -94,6 +96,15 @@ function AppContent() {
   const [password, setPassword] = useState('')
 
   useEffect(() => {
+    const navigate = (event: Event) => {
+      const target = (event as CustomEvent<string>).detail
+      if (typeof target === 'string') setPage(target)
+    }
+    window.addEventListener('prismapres:navigate', navigate)
+    return () => window.removeEventListener('prismapres:navigate', navigate)
+  }, [])
+
+  useEffect(() => {
     if (!authLoading && session && dbReady) setMode('app')
     if (!authLoading && !session && mode === 'app') setMode('login')
   }, [authLoading, session, dbReady, mode])
@@ -134,7 +145,7 @@ function AppContent() {
             <div><small>WORKSPACE GRÁFICO · PRISMAPRES</small><h1>{page === 'Visão geral' ? 'Sua gráfica em foco' : page}</h1><p>Do orçamento à entrega, todas as etapas conectadas.</p></div>
             {page !== 'Blog' && <button className="primary" onClick={() => setPage('Orçamentos')}><Plus size={16}/> Novo orçamento</button>}
           </div>
-          {page === 'Blog' ? <BlogPage/> : page === 'Visão geral' ? <DashboardPage onNavigate={setPage}/> : page === 'Clientes' ? <ClientesPage/> : page === 'Orçamentos' ? <OrcamentosPage/> : <WorkspaceModule page={page} onNavigate={setPage}/>}
+          {page === 'Blog' ? <BlogPage/> : page === 'Visão geral' ? <DashboardPage onNavigate={setPage}/> : page === 'Clientes' ? <ClientesPage/> : page === 'Orçamentos' ? <OrcamentosPage/> : page === 'Pedidos' ? <PedidosPage/> : page === 'Chão de gráfica' ? <ProducaoPage/> : <WorkspaceModule page={page} onNavigate={setPage}/>}
         </article>
       </main>
     </div>
