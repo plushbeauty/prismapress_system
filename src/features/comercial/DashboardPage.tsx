@@ -16,10 +16,10 @@ import type { Cliente, NotaFiscal, OrdemServico, Pedido, TituloFinanceiro } from
 import './DashboardPage.css'
 
 type DashboardPageProps = { onNavigate: (page: string) => void }
-type InvoiceFilter = 'Todas' | 'A receber' | 'A pagar' | 'Vencidas'
+type InvoiceFilter = 'Todas' | 'A receber' | 'A pagar'
 type ChartPoint = { month: string; incoming: number; outgoing: number }
 const money = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0)
-const monthKey = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}'
+const monthKey = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
 const dateLabel = (value: string | null) => value ? new Date(value + 'T12:00:00').toLocaleDateString('pt-BR') : 'Sem data'
 const stageInfo = [
   { id: 'pre', label: 'Pré-impressão', color: '#8067df' },
@@ -75,9 +75,9 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   useEffect(() => { void carregar() }, [carregar])
 
   const today = new Date()
-  const todayISO = today.toISOString().slice(0, 10)
-  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().slice(0, 10)
-  const monthTitles = titulos.filter(t => t.vencimento >= monthStart && t.vencimento <= todayISO && t.status === 'pago')
+  const todayISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+  const monthStart = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-01`
+  const monthTitles = titulos.filter(t => t.status === 'pago' && (t.pago_em ?? '').slice(0, 10) >= monthStart && (t.pago_em ?? '').slice(0, 10) <= todayISO)
   const received = monthTitles.filter(t => t.tipo === 'receber').reduce((sum, t) => sum + Number(t.valor || 0), 0)
   const paid = monthTitles.filter(t => t.tipo === 'pagar').reduce((sum, t) => sum + Number(t.valor || 0), 0)
   const receivable = titulos.filter(t => t.tipo === 'receber' && t.status === 'pendente').reduce((sum, t) => sum + Number(t.valor || 0), 0)
@@ -99,12 +99,10 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   const currentChart = chart[activeMonth] ?? chart[5]
   const filteredInvoices = notas.filter(n => {
     if (invoiceFilter === 'Todas') return true
-    if (invoiceFilter === 'Vencidas') return false
     return invoiceFilter === 'A receber' ? n.tipo === 'saida' : n.tipo === 'entrada'
   })
   const stages = stageInfo.map(stage => ({ ...stage, count: stage.id === 'concluido' ? ordens.filter(o => o.status === 'concluido').length : activeOrders.filter(o => o.etapa === stage.id).length }))
   const greeting = perfil?.nome ? perfil.nome.split(' ')[0] : 'Sua equipe'
-  const today = new Date()
   const formattedToday = new Intl.DateTimeFormat('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }).format(today)
   const invoiceClient = (note: NotaFiscal) => clientes.find(client => client.id === (note.tipo === 'saida' ? note.cliente_id : note.fornecedor_id))?.nome ?? (note.tipo === 'saida' ? 'Cliente' : 'Fornecedor')
 
@@ -156,7 +154,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
 
         <article className="dashboard-panel dashboard-invoices">
           <div className="dashboard-panel-heading"><div><small>ROTINA FISCAL</small><h3>Notas fiscais</h3></div><button className="dashboard-text-action" onClick={() => onNavigate('Fiscal')}>Ver módulo <ArrowRight size={14}/></button></div>
-          <div className="invoice-tabs" role="group" aria-label="Filtrar notas fiscais">{(['Todas','A receber','A pagar','Vencidas'] as const).map(filter => <button type="button" key={filter} aria-pressed={invoiceFilter === filter} className={invoiceFilter === filter ? 'active' : ''} onClick={() => setInvoiceFilter(filter)}>{filter}</button>)}</div>
+          <div className="invoice-tabs" role="group" aria-label="Filtrar notas fiscais">{(['Todas','A receber','A pagar'] as const).map(filter => <button type="button" key={filter} aria-pressed={invoiceFilter === filter} className={invoiceFilter === filter ? 'active' : ''} onClick={() => setInvoiceFilter(filter)}>{filter}</button>)}</div>
           {loading ? <div className="dashboard-loading">Carregando notas...</div> : !available.notas ? <div className="dashboard-loading">Notas fiscais indisponíveis.</div> : filteredInvoices.length ? <div className="invoice-list">{filteredInvoices.slice(0,5).map(note => <div className="invoice-row" key={note.id}><div><b>NF {note.numero}</b><small>{invoiceClient(note)} · {dateLabel(note.emitida_em)}</small></div><strong>{money(note.valor)}</strong><span className={note.tipo === 'saida' ? 'invoice-receive' : 'invoice-pay'}>{note.tipo === 'saida' ? 'Saída' : 'Entrada'}</span></div>)}</div> : <div className="dashboard-loading">Nenhuma nota fiscal nesta visualização.</div>}
           <p className="dashboard-chart-caption">Documentos fiscais reais registrados no PRISMAPRES.</p>
         </article>
