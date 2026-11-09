@@ -162,6 +162,11 @@ export type Pedido = {
   status: PedidoStatus
   valor_total: number
   prazo_entrega: string | null
+  descricao?: string | null
+  quantidade?: number
+  referencia?: string | null
+  origem?: string
+  setor?: string
   created_at: string
 }
 
