@@ -3,11 +3,12 @@ import { ArrowRight, Command, Menu, X } from 'lucide-react'
 import { useState } from 'react'
 
 const links = [
-  { href: '/#modulos', label: 'Módulos' },
-  { href: '/#custos', label: 'Central de Custos' },
-  { href: '/#fluxo', label: 'Como funciona' },
+  { href: '/#inicio', label: 'Início' },
   { href: '/#planos', label: 'Planos' },
-  { href: '/#contato', label: 'Contato' },
+  { href: '/#recursos', label: 'Recursos' },
+  { href: '/#vantagens', label: 'Vantagens' },
+  { href: '/#depoimentos', label: 'Depoimentos' },
+  { href: '/#faq', label: 'FAQ' },
 ]
 
 type PublicShellProps = {
@@ -36,7 +37,7 @@ export default function PublicShell({ children, onLogin }: PublicShellProps) {
         <div className="public-shell-actions">
           <button type="button" className="public-shell-enter" onClick={onLogin}>Entrar</button>
           <button type="button" className="public-shell-trial" onClick={onLogin}>
-            Teste 15 dias <ArrowRight size={14} />
+            15 dias grátis <ArrowRight size={14} />
           </button>
         </div>
 
