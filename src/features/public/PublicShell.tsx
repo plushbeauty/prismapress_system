@@ -61,7 +61,7 @@ export default function PublicShell({ children, onLogin }: PublicShellProps) {
             </nav>
             <div>
               <button type="button" className="public-shell-enter" onClick={() => { closeMenu(); onLogin() }}>Entrar</button>
-              <button type="button" className="public-shell-trial" onClick={() => { closeMenu(); onLogin() }}>Teste 15 dias</button>
+              <button type="button" className="public-shell-trial" onClick={() => { closeMenu(); onLogin() }}>15 dias grátis</button>
             </div>
           </div>
         )}
@@ -79,8 +79,8 @@ export default function PublicShell({ children, onLogin }: PublicShellProps) {
           </div>
           <div>
             <b>Sistema</b>
-            <a href="/#modulos">Módulos</a>
-            <a href="/#custos">Central de Custos</a>
+            <a href="/#recursos">Módulos</a>
+            <a href="/#planos">Central de Custos</a>
             <a href="/#planos">Planos</a>
             <button type="button" onClick={onLogin}>Entrar</button>
           </div>
