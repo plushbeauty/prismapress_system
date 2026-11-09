@@ -41,7 +41,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [available, setAvailable] = useState({ pedidos: true, ordens: true, financeiro: true, notas: true, clientes: true })
+  const [available, setAvailable] = useState({ orcamentos: true, ordens: true, financeiro: true, notas: true, clientes: true })
 
   const carregar = useCallback(async (silent = false) => {
     if (!supabase || !empresa?.id) {
@@ -59,10 +59,11 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
       supabase.from('gr_clientes').select('*').eq('empresa_id', empresa.id).eq('ativo', true),
     ])
     const [p, o, t, n, c] = results
-    const flags = { pedidos: !p.error, ordens: !o.error, financeiro: !t.error, notas: !n.error, clientes: !c.error }
+    const flags = { orcamentos: !p.error, ordens: !o.error, financeiro: !t.error, notas: !n.error, clientes: !c.error }
     setAvailable(flags)
-    const failures = results.flatMap((result, index) => result.error ? [`${['Pedidos', 'Produção', 'Financeiro', 'Notas fiscais', 'Clientes'][index]}: ${result.error.message}`] : [])
+    const failures = results.flatMap((result, index) => result.error ? [`${['Orçamentos', 'Produção', 'Financeiro', 'Notas fiscais', 'Clientes'][index]}: ${result.error.message}`] : [])
     if (failures.length) setError(failures.join(' · '))
+    if (!p.error) setOrcamentos((p.data ?? []) as Orcamento[])
     if (!o.error) setOrdens((o.data ?? []) as OrdemServico[])
     if (!t.error) setTitulos((t.data ?? []) as TituloFinanceiro[])
     if (!n.error) setNotas((n.data ?? []) as NotaFiscal[])
