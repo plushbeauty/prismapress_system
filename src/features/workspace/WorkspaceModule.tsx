@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import './WorkspaceModule.css'
+import ModuloPendente from './ModuloPendente'
 
 type ModuleConfig = {
   eyebrow: string
@@ -167,6 +168,8 @@ export default function WorkspaceModule({ page, onNavigate }: { page: string; on
   const [rows, setRows] = useState(config.rows)
   const Icon = config.icon
   const filtered = useMemo(() => rows.filter(row => row.join(' ').toLocaleLowerCase('pt-BR').includes(query.toLocaleLowerCase('pt-BR'))), [rows, query])
+
+  if (!modules[page]) return <ModuloPendente page={page} onBack={() => onNavigate('Visão geral')} />
 
   const save = () => {
     if (!values.some(value => value.trim())) return
