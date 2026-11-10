@@ -14,8 +14,9 @@ import { supabase } from '../../lib/supabaseClient'
 import { useSession } from '../../contexts/SessionContext'
 import type { Cliente, Orcamento, OrcamentoItem, OrcamentoStatus } from '../../lib/types'
 import './OrcamentosPage.css'
+import CalculadoraTiragem from './CalculadoraTiragem'
 
-type ItemForm = { descricao: string; produto: string; quantidade: number; preco_unitario: number }
+type ItemForm = { descricao: string; produto: string; quantidade: number; preco_unitario: number; custo_total?: number; custo_input?: Record<string, unknown> }
 const itemVazio: ItemForm = { descricao: '', produto: '', quantidade: 1000, preco_unitario: 0.5 }
 const statusLabel: Record<OrcamentoStatus, string> = {
   rascunho: 'Rascunho', enviado: 'Aguardando resposta', aprovado: 'Aprovado', recusado: 'Recusado', expirado: 'Expirado',
@@ -104,7 +105,7 @@ export default function OrcamentosPage() {
       empresa_id: empresa.id, orcamento_id: created.id, sequencia: index + 1,
       descricao: item.descricao.trim(), produto: item.produto.trim() || null,
       quantidade: item.quantidade, largura_mm: null, altura_mm: null, material_id: null, maquina_id: null,
-      custo_input: {}, custo_total: 0, preco_unitario: item.preco_unitario,
+      custo_input: item.custo_input ?? {}, custo_total: item.custo_total ?? 0, preco_unitario: item.preco_unitario,
       preco_total: item.quantidade * item.preco_unitario,
     }))
     const { error: itemError } = await supabase.from('gr_orcamento_itens').insert(payload)
@@ -140,10 +141,18 @@ export default function OrcamentosPage() {
     setSaving(false)
   }
 
+  const aplicarCalculadora = (item: { descricao: string; quantidade: number; preco_unitario: number; custo_total: number; custo_input: Record<string, unknown> }) => {
+    setItens(current => [...current, { descricao: item.descricao, produto: item.descricao, quantidade: item.quantidade, preco_unitario: item.preco_unitario, custo_total: item.custo_total, custo_input: item.custo_input }])
+    setTitulo(current => current || item.descricao)
+    setSucesso(null)
+    setAberto(true)
+  }
+
   return (
     <div className="orc-page">
       <div className="orc-heading"><div><span className="orc-eyebrow"><FileText size={14}/> COMERCIAL · FORMAÇÃO DE PREÇOS</span><h2>Central de orçamentos</h2><p>Crie propostas, acompanhe respostas e converta aprovações em pedidos.</p></div><button className="orc-primary" onClick={novo}><Plus size={16}/> Novo orçamento</button></div>
       {sucesso && <div className="orc-success" role="status">{sucesso}</div>}{erro && <div className="orc-error" role="alert">{erro}</div>}
+      <CalculadoraTiragem onApply={aplicarCalculadora}/>
       <div className="orc-stats"><article><small>Aguardando resposta</small><strong>{counts.enviados}</strong><span>Propostas enviadas</span></article><article><small>Aprovados</small><strong>{counts.aprovados}</strong><span>Orçamentos convertidos</span></article><article><small>Total aprovado</small><strong>{money(counts.soma)}</strong><span>Valor dos orçamentos aprovados</span></article></div>
       <section className="orc-panel"><div className="orc-toolbar"><label><Search size={15}/><input value={busca} onChange={e => setBusca(e.target.value)} placeholder="Buscar número, título ou cliente"/></label><select value={statusFiltro} onChange={e => setStatusFiltro(e.target.value)}><option value="todos">Todos os status</option>{Object.entries(statusLabel).map(([value,label]) => <option value={value} key={value}>{label}</option>)}</select><span>{filtrados.length} orçamento(s)</span></div>
         {loading ? <div className="orc-empty"><LoaderCircle className="orc-spin" size={20}/> Carregando dados do banco...</div> : filtrados.length === 0 ? <div className="orc-empty"><FileText size={24}/><b>Nenhum orçamento encontrado</b><span>Crie a primeira proposta comercial.</span></div> :

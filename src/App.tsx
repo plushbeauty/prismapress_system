@@ -5,6 +5,7 @@ import ClientesPage from './features/comercial/ClientesPage'
 import OrcamentosPage from './features/comercial/OrcamentosPage'
 import PedidosPage from './features/comercial/PedidosPage'
 import ProducaoPage from './features/producao/ProducaoPage'
+import ChaoDeGraficaPage from './features/producao/ChaoDeGraficaPage'
 import BlogPage from './features/comercial/BlogPage'
 import WorkspaceModule from './features/workspace/WorkspaceModule'
 import PublicShell from './features/public/PublicShell'
@@ -14,7 +15,7 @@ const groups = [
   { name: 'WORKSPACE', items: [['Visão geral', LayoutDashboard]] },
   { name: 'COMERCIAL', items: [['Orçamentos', ClipboardList], ['Pedidos', ShoppingCart], ['Clientes', Users]] },
   { name: 'ARTE & PRÉ-IMPRESSÃO', items: [['Pré-impressão', FileText], ['Engenharia gráfica', Palette]] },
-  { name: 'PRODUÇÃO', items: [['Chão de gráfica', Factory]] },
+  { name: 'PRODUÇÃO', items: [['PCP / Ordens', ClipboardList], ['Chão de gráfica', Factory]] },
   { name: 'SUPRIMENTOS', items: [['Materiais', Boxes], ['Estoque', Boxes], ['Compras', ShoppingCart]] },
   { name: 'FISCAL & FINANCEIRO', items: [['Fiscal', FileText], ['Financeiro', Wallet]] },
   { name: 'LOGÍSTICA', items: [['Entregas', Truck]] },
@@ -145,7 +146,7 @@ function AppContent() {
             <div><small>WORKSPACE GRÁFICO · PRISMAPRES</small><h1>{page === 'Visão geral' ? 'Sua gráfica em foco' : page}</h1><p>Do orçamento à entrega, todas as etapas conectadas.</p></div>
             {page !== 'Blog' && <button className="primary" onClick={() => setPage('Orçamentos')}><Plus size={16}/> Novo orçamento</button>}
           </div>
-          {page === 'Blog' ? <BlogPage/> : page === 'Visão geral' ? <DashboardPage onNavigate={setPage}/> : page === 'Clientes' ? <ClientesPage/> : page === 'Orçamentos' ? <OrcamentosPage/> : page === 'Pedidos' ? <PedidosPage/> : page === 'Chão de gráfica' ? <ProducaoPage/> : <WorkspaceModule page={page} onNavigate={setPage}/>}
+          {page === 'Blog' ? <BlogPage/> : page === 'Visão geral' ? <DashboardPage onNavigate={setPage}/> : page === 'Clientes' ? <ClientesPage/> : page === 'Orçamentos' ? <OrcamentosPage/> : page === 'Pedidos' ? <PedidosPage/> : page === 'PCP / Ordens' ? <ProducaoPage/> : page === 'Chão de gráfica' ? <ChaoDeGraficaPage/> : <WorkspaceModule page={page} onNavigate={setPage}/>}
         </article>
       </main>
     </div>
