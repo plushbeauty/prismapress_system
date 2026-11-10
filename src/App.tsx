@@ -172,8 +172,11 @@ class AppErrorBoundary extends Component<{ children: ReactNode }, { hasError: bo
             <div className="brand"><Command /> PRISMA<span>PRES</span></div>
             <small>RECUPERAÇÃO DO SISTEMA</small>
             <h1>Não foi possível carregar esta tela.</h1>
-            <p>Ocorreu uma falha inesperada na interface. Tente recarregar a aplicação.</p>
-            <button className="primary" onClick={() => window.location.reload()}>Recarregar PRISMAPRES</button>
+            <p>Ocorreu uma falha inesperada na interface. Você pode tentar carregar a tela novamente ou voltar ao início.</p>
+            <div className="app-error-actions">
+              <button className="primary" onClick={() => this.setState({ hasError: false })}>Tentar novamente</button>
+              <button className="secondary" onClick={() => window.location.assign('/')}>Voltar ao início</button>
+            </div>
           </div>
         </main>
       )

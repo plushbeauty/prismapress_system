@@ -65,6 +65,10 @@
 .app-error-card h1{font:800 29px/1.15 Manrope,sans-serif;letter-spacing:-.04em;color:#29253d;margin:14px 0}
 .app-error-card p{font-size:13px;line-height:1.7;color:#858094}
 .app-error-card .primary{max-width:230px;padding:0 16px}
+.app-error-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.app-error-actions .primary,.app-error-actions .secondary{width:auto;max-width:none;min-height:42px;padding:0 16px}
+.app-error-actions .secondary{border:1px solid #e6e1ef;border-radius:10px;background:#fff;color:#514b65;font-weight:700;cursor:pointer}
+@media(max-width:520px){.app-error-card{padding:26px}.app-error-actions{flex-direction:column}.app-error-actions button{width:100%!important}}
 
 /* Navegação principal acessível e persistente em telas grandes */
 .shell>.app-sidebar{position:sticky;top:0;height:100vh;min-height:100vh;overflow-y:auto;overscroll-behavior:contain}

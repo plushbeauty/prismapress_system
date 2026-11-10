@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Clock3, Search, Sparkles } from "lucide-react";
+import { ArrowRight, Clock3, Search, Sparkles } from "lucide-react";
 import "./BlogPage.css";
 
 const categories = ["Todos", "Gestão", "Produção", "Vendas", "Financeiro", "Tecnologia"];
@@ -20,28 +20,33 @@ export default function BlogPage() {
     (post.title + " " + post.excerpt).toLocaleLowerCase("pt-BR").includes(search.toLocaleLowerCase("pt-BR"))
   ), [category, search]);
 
-  return <div className="blog-page">
-    <section className="blog-hero">
-      <div><span className="blog-featured"><Sparkles size={12}/> CONTEÚDO PARA O UNIVERSO GRÁFICO</span>
-        <h2>Ideias que movimentam<br/>a sua gráfica.</h2>
-        <p>Gestão, produção, vendas e tecnologia explicadas de forma prática para quem vive a impressão.</p>
+  return <div className="blog-page blog-page-experiment">
+    <section className="blog-hero blog-hero-new">
+      <div className="blog-hero-copy">
+        <span className="blog-featured"><Sparkles size={13}/> EM DESTAQUE · UNIVERSO DA IMPRESSÃO</span>
+        <h2>Blog PrismaPress:<br/><em>gestão e impressão</em><br/>no mesmo lugar.</h2>
+        <p>Tendências, tutoriais e estratégias práticas para sua gráfica produzir melhor, vender mais e crescer com controle.</p>
+        <a className="blog-featured-link" href="#blog-artigos">Explorar artigos <ArrowRight size={16}/></a>
       </div>
-      <div className="blog-hero-art" aria-hidden="true"><div className="blog-sheet"><b>CMYK</b><i/><i/><i/><span>IDEIAS EM<br/>IMPRESSÃO</span></div></div>
+      <div className="blog-hero-art blog-hero-photo" role="img" aria-label="Composição gráfica em cores de impressão">
+        <div className="blog-hero-paper"><b>CMYK</b><span>IDEIAS EM<br/>IMPRESSÃO</span><i/><i/><i/></div>
+        <small>PRISMAPRESS · CONTEÚDO</small>
+      </div>
     </section>
-    <div className="blog-toolbar">
+    <div className="blog-toolbar blog-toolbar-new" id="blog-artigos">
       <div className="blog-categories" aria-label="Filtrar por categoria">{categories.map(item =>
-        <button key={item} className={category === item ? "active" : ""} onClick={() => setCategory(item)}>{item}</button>
+        <button type="button" key={item} className={category === item ? "active" : ""} aria-pressed={category === item} onClick={() => setCategory(item)}>{item}</button>
       )}</div>
       <label className="blog-search"><Search size={15}/><input value={search} onChange={event => setSearch(event.target.value)} placeholder="Buscar artigos..." aria-label="Buscar artigos"/></label>
     </div>
     <div className="blog-results">{filtered.length} {filtered.length === 1 ? "artigo encontrado" : "artigos encontrados"}</div>
-    <section className="blog-grid">
-      {filtered.map((post, index) => <article className="blog-card" key={post.title}>
+    <section className="blog-grid blog-grid-new">
+      {filtered.map((post, index) => <article className={`blog-card blog-card-new ${post.accent === "orange" ? "blog-card-orange" : ""}`} key={post.title}>
         <div className={`blog-cover cover-${post.accent}`}><span>{String(index + 1).padStart(2, "0")}</span><b>{post.category.toUpperCase()}</b><i/><i/><i/></div>
         <div className="blog-card-body"><span className="blog-tag">{post.category}</span><h3>{post.title}</h3><p>{post.excerpt}</p><div className="blog-card-meta"><span><Clock3 size={13}/> {post.minutes} min de leitura</span><span className="blog-coming">Conteúdo inicial</span></div></div>
       </article>)}
     </section>
     {filtered.length === 0 && <div className="blog-empty">Nenhum artigo encontrado. Tente outra palavra ou categoria.</div>}
-    <p className="blog-disclaimer">Biblioteca editorial inicial do PRISMAPRES. Os textos completos serão publicados em próximas etapas.</p>
+    <p className="blog-disclaimer">Biblioteca editorial inicial do PRISMAPRESS. Os textos completos serão publicados em próximas etapas.</p>
   </div>;
 }
