@@ -8,10 +8,10 @@ export type Empresa = {
 
 export type Perfil = {
   id: string
-  empresa_id: string
+  empresa_id: string | null
   nome: string
   email: string | null
-  papel: 'admin' | 'comercial' | 'producao' | 'financeiro' | 'operador'
+  papel: 'master' | 'admin' | 'comercial' | 'producao' | 'financeiro' | 'operador'
   ativo: boolean
 }
 

@@ -1,5 +1,6 @@
 import { Component, useEffect, useState, type ErrorInfo, type ReactNode } from 'react'
 import { useSession } from './contexts/SessionContext'
+import { supabase } from './lib/supabaseClient'
 import DashboardPage from './features/comercial/DashboardPage'
 import ClientesPage from './features/comercial/ClientesPage'
 import OrcamentosPage from './features/comercial/OrcamentosPage'
@@ -8,6 +9,7 @@ import ProducaoPage from './features/producao/ProducaoPage'
 import BlogPage from './features/comercial/BlogPage'
 import WorkspaceModule from './features/workspace/WorkspaceModule'
 import PublicShell from './features/public/PublicShell'
+import MasterDashboard from './features/master/MasterDashboard'
 import { ArrowUpRight, Bell, BookOpen, Boxes, Check, CheckCircle2, ChevronDown, ClipboardList, Command, Factory, FileText, LayoutDashboard, Palette, Plus, Printer, Search, Settings2, ShoppingCart, Truck, Users, Wallet, Calculator, PackageCheck, Receipt, ShieldCheck, Cog, Headset, RefreshCw, LockKeyhole, Quote, Star } from 'lucide-react'
 
 const groups = [
@@ -94,6 +96,28 @@ function AppContent() {
   const [page, setPage] = useState('Visão geral')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [setupOpen, setSetupOpen] = useState(false)
+  const [setupName, setSetupName] = useState('')
+  const [setupEmail, setSetupEmail] = useState('')
+  const [setupPassword, setSetupPassword] = useState('')
+  const [setupConfirm, setSetupConfirm] = useState('')
+  const [setupAvailable, setSetupAvailable] = useState<boolean | null>(null)
+  const [setupMessage, setSetupMessage] = useState<string | null>(null)
+  const [setupLoading, setSetupLoading] = useState(false)
+
+  useEffect(() => {
+    if (!setupOpen) return
+    let active = true
+    setSetupAvailable(null)
+    if (!supabase) { setSetupAvailable(false); setSetupMessage('Supabase do PRISMAPRES não está configurado.'); return }
+    void supabase.functions.invoke('prismapres-master-bootstrap', { body: { action: 'status' } }).then(({ data, error }) => {
+      if (!active) return
+      if (error) { setSetupAvailable(false); setSetupMessage('Serviço de cadastro MASTER indisponível. Verifique a configuração do Supabase.'); return }
+      setSetupAvailable(Boolean(data?.available))
+      if (!data?.available) setSetupMessage('O proprietário MASTER já foi cadastrado. O primeiro acesso está bloqueado.')
+    }).catch(() => { if (active) { setSetupAvailable(false); setSetupMessage('Não foi possível consultar a disponibilidade do cadastro MASTER.') } })
+    return () => { active = false }
+  }, [setupOpen])
 
   useEffect(() => {
     const navigate = (event: Event) => {
@@ -112,13 +136,48 @@ function AppContent() {
   if (mode === 'home') return <PublicHome onLogin={() => setMode('login')} />
 
   if (mode === 'login') return <main className="login">
-    <section className="visual"><div className="brand"><Command/> PRISMA<span>PRES</span></div><div><small>GESTÃO INTELIGENTE PARA GRÁFICAS</small><h1>Sua gráfica.<br/><em>Em outra</em> dimensão.</h1><p>Da primeira ideia à entrega final: clareza, controle e criatividade em cada etapa da impressão.</p></div><div className="paper-art"><i/><i/><i/></div><footer>COMERCIAL · PRODUÇÃO · FINANCEIRO</footer></section>
-    <section className="access"><small>PRISMAPRES / PORTAL</small><form onSubmit={async e => { e.preventDefault(); setAuthMessage(null); const result = await signIn(email, password); if (result.error) setAuthMessage(result.error) }}><label>BEM-VINDO DE VOLTA</label><h2>Acesse seu espaço.</h2><p>Entre para acompanhar sua operação gráfica.</p><span>E-mail de acesso</span><input type="email" placeholder="voce@suaempresa.com.br" value={email} onChange={e => setEmail(e.target.value)} required/><span>Senha</span><input type="password" placeholder="Sua senha" value={password} onChange={e => setPassword(e.target.value)} required/><button className="primary" disabled={authLoading}>{authLoading ? 'Verificando acesso...' : 'Entrar no PRISMAPRES'} <ArrowUpRight size={17}/></button>{(authMessage || authError) && <small role="alert" className="disclaimer">{authMessage || authError}</small>}{session && !dbReady && !authLoading && <small role="status" className="disclaimer">A sessão foi autenticada, mas o perfil da empresa ainda não está pronto.</small>}<button type="button" className="secondary" onClick={() => setMode('home')}>Voltar ao site</button><small className="disclaimer">Acesso protegido pelo Supabase exclusivo do PRISMAPRES.</small></form><footer>© 2026 PRISMAPRES</footer></section>
+    <section className="visual"><div className="brand"><Command/> PRISMA<span>PRES</span></div><div><small>GESTÃO INTELIGENTE PARA GRÁFICAS</small><h1>Sua gráfica.<br/><em>Em outra</em> dimensão.</h1><p>Da primeira ideia à entrega final: clareza, controle e criatividade em cada etapa da impressão.</p></div><div className="paper-art"><i/><i/><i/></div><footer><button type="button" className="first-access-trigger" onClick={() => { setSetupOpen(value => !value); setSetupMessage(null) }} aria-expanded={setupOpen}>COMERCIAL · PRODUÇÃO · FINANCEIRO</button></footer></section>
+    <section className="access"><small>PRISMAPRES / PORTAL</small><form onSubmit={async e => { e.preventDefault(); setAuthMessage(null); const result = await signIn(email, password); if (result.error) setAuthMessage(result.error) }}><label>BEM-VINDO DE VOLTA</label><h2>Acesse seu espaço.</h2><p>Entre para acompanhar sua operação gráfica.</p><span>E-mail de acesso</span><input type="email" placeholder="voce@suaempresa.com.br" value={email} onChange={e => setEmail(e.target.value)} required/><span>Senha</span><input type="password" placeholder="Sua senha" value={password} onChange={e => setPassword(e.target.value)} required/><button className="primary" disabled={authLoading}>{authLoading ? 'Verificando acesso...' : 'Entrar no PRISMAPRES'} <ArrowUpRight size={17}/></button>{(authMessage || authError) && <small role="alert" className="disclaimer">{authMessage || authError}</small>}{session && !dbReady && !authLoading && <small role="status" className="disclaimer">A sessão foi autenticada, mas o perfil da empresa ainda não está pronto.</small>}<button type="button" className="secondary" onClick={() => setMode('home')}>Voltar ao site</button><small className="disclaimer">Acesso protegido pelo Supabase exclusivo do PRISMAPRES.</small></form><footer>© 2026 PRISMAPRES</footer>
+      {setupOpen && <div className="first-access-overlay" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) setSetupOpen(false) }}>
+        <section className="first-access-card" role="dialog" aria-modal="true" aria-labelledby="first-access-title">
+          <button type="button" className="first-access-close" onClick={() => setSetupOpen(false)} aria-label="Fechar">×</button>
+          <small>PRISMAPRES / CONFIGURAÇÃO INICIAL</small>
+          <h2 id="first-access-title">Primeiro acesso MASTER</h2>
+          <p>Cadastre o proprietário universal do PRISMAPRES. Este acesso não pertence a uma empresa específica.</p>
+          <form onSubmit={async event => {
+            event.preventDefault()
+            setSetupMessage(null)
+            if (!supabase) { setSetupMessage('Supabase do PRISMAPRES não está configurado.'); return }
+            if (setupPassword !== setupConfirm) { setSetupMessage('A confirmação da senha não confere.'); return }
+            if (setupAvailable !== true) { setSetupMessage('O cadastro MASTER não está disponível neste momento.'); return }
+            setSetupLoading(true)
+            const { data, error } = await supabase.functions.invoke('prismapres-master-bootstrap', { body: { action: 'bootstrap_master', nome: setupName.trim(), email: setupEmail.trim().toLowerCase(), password: setupPassword } })
+            setSetupLoading(false)
+            if (error || !data?.ok) setSetupMessage(data?.error === 'MASTER_ALREADY_EXISTS' ? 'O proprietário MASTER já existe. Cadastro bloqueado.' : 'Não foi possível concluir o cadastro. Verifique o serviço e tente novamente.')
+            else {
+              const login = await supabase.auth.signInWithPassword({ email: setupEmail.trim().toLowerCase(), password: setupPassword })
+              if (login.error) setSetupMessage('MASTER criado. Faça login com o e-mail e a senha cadastrados.')
+              else setSetupMessage('Acesso MASTER criado com sucesso. Preparando o painel...')
+            }
+          }}>
+            <label>Nome do administrador</label><input value={setupName} onChange={event => setSetupName(event.target.value)} autoComplete="name" required />
+            <label>Usuário / e-mail</label><input type="email" value={setupEmail} onChange={event => setSetupEmail(event.target.value)} autoComplete="email" required />
+            <label>Senha MASTER</label><input type="password" value={setupPassword} onChange={event => setSetupPassword(event.target.value)} autoComplete="new-password" minLength={8} required />
+            <label>Confirmar senha</label><input type="password" value={setupConfirm} onChange={event => setSetupConfirm(event.target.value)} autoComplete="new-password" minLength={8} required />
+            <button className="primary" type="submit" disabled={setupLoading || setupAvailable !== true}>{setupLoading ? 'Configurando...' : setupAvailable === null ? 'Verificando disponibilidade...' : setupAvailable ? 'Criar proprietário MASTER' : 'Cadastro MASTER indisponível'}</button>
+            {setupMessage && <small className="first-access-message" role="status">{setupMessage}</small>}
+            <small className="disclaimer">O servidor permite somente um cadastro MASTER inicial. Nenhuma empresa é criada nesta etapa.</small>
+          </form>
+        </section>
+      </div>}
+    </section>
   </main>
 
   if (authLoading || (session && !dbReady)) return <main className="login"><section className="access"><small>PRISMAPRES / PORTAL</small><div><h2>Validando seu acesso...</h2><p>{authError || 'Carregando perfil e empresa.'}</p><button className="secondary" onClick={() => setMode('login')}>Voltar ao login</button></div></section></main>
 
   if (!session || !dbReady) return <main className="login"><section className="access"><small>PRISMAPRES / PORTAL</small><div><h2>Acesso necessário</h2><p>{authError || 'Entre com sua conta para acessar o workspace.'}</p><button className="primary" onClick={() => setMode('login')}>Ir para login</button></div></section></main>
+
+  if (session && dbReady && perfil?.papel === 'master') return <MasterDashboard nome={perfil.nome} onSignOut={() => void signOut()} />
 
   return (
     <div className="shell">
