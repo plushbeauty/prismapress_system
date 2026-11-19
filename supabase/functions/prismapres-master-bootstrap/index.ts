@@ -42,7 +42,6 @@ Deno.serve(async (req: Request) => {
       .from("gr_usuarios")
       .select("id")
       .eq("is_master", true)
-      .eq("papel", "master")
       .gte("nivel_admin", 100)
       .is("empresa_id", null)
       .limit(1);
