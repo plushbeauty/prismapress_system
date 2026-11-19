@@ -6,7 +6,7 @@ const allowedOrigins = new Set([
   "https://prismapresssystem.vercel.app",
   "http://localhost:5173",
 ]);
-const allowedOrigin = (origin: string | null) => Boolean(origin && (allowedOrigins.has(origin) || /^https:\\/\\/prismapresssystem-[a-z0-9-]+-plushbeauty\\.vercel\\.app$/.test(origin)));
+const allowedOrigin = (origin: string | null) => Boolean(origin && (allowedOrigins.has(origin) || /^https:\/\/prismapresssystem-[a-z0-9-]+-plushbeauty\.vercel\.app$/.test(origin)));
 const headers = (origin: string | null) => ({
   "Access-Control-Allow-Origin": allowedOrigin(origin) ? origin! : "https://prismapresssystem.vercel.app",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
