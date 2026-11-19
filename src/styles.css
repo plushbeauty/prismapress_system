@@ -308,3 +308,28 @@ summary::-webkit-details-marker {
 .first-access-close{position:absolute;right:18px;top:14px;width:32px;height:32px;border:0;border-radius:8px;background:#f4f1fb;color:#70658f;font-size:22px;line-height:1}
 .first-access-message{display:block;margin-top:14px;padding:11px;border-radius:8px;background:#fff6e8;color:#8a5a13;font-size:10px;line-height:1.5}
 @media(max-width:600px){.first-access-card{padding:25px 20px}.first-access-card h2{font-size:23px}}
+
+
+/* PRISMAPRES — console do proprietário MASTER */
+.master-console{min-height:100vh;background:#f3f7f8;color:#163447;padding:0 5vw 56px;font-family:Inter,system-ui,sans-serif}
+.master-console-header{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #dce7eb}
+.master-brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.08em}
+.master-brand span{font-size:10px;letter-spacing:.16em;background:#e5f5f3;color:#187e79;padding:6px 9px;border-radius:20px}
+.master-console-header button,.master-card-heading button{display:inline-flex;align-items:center;gap:8px;border:1px solid #d3e1e7;background:white;color:#21495e;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+.master-welcome{max-width:1050px;margin:54px auto 26px}
+.master-welcome>span{font-size:10px;font-weight:900;letter-spacing:.2em;color:#278d9a}
+.master-welcome h1{font-size:clamp(28px,4vw,42px);margin:12px 0;color:#153b50}
+.master-welcome p{color:#607987;line-height:1.6}
+.master-security{display:inline-flex;align-items:center;gap:9px;margin-top:16px;padding:12px 15px;border:1px solid #cce6e4;background:#eaf7f6;color:#20766f;border-radius:12px;font-size:12px;font-weight:700}
+.master-card{max-width:1050px;margin:0 auto;background:#fff;border:1px solid #dce7eb;border-radius:18px;padding:24px;box-shadow:0 14px 40px #173d5010}
+.master-card-heading,.master-card-heading>div{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.master-card-heading>div{justify-content:flex-start}
+.master-card-heading h2{font-size:18px;margin:0 0 4px}
+.master-card-heading p{margin:0;color:#718591;font-size:12px}
+.master-empty,.master-error{padding:30px 10px;color:#718591;font-size:14px}
+.master-error{color:#b33b48}
+.master-table-wrap{overflow:auto;margin-top:20px}
+.master-table-wrap table{width:100%;border-collapse:collapse;text-align:left}
+.master-table-wrap th,.master-table-wrap td{padding:13px;border-bottom:1px solid #e7eef1;font-size:13px}
+.master-table-wrap th{color:#6b808b;font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+.master-count{display:block;color:#81939c;font-size:11px;margin-top:16px}
