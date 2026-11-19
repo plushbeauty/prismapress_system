@@ -3,6 +3,8 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 
 const allowedOrigins = new Set([
   "https://prismapresssystem-2315rkrly-plushbeauty.vercel.app",
+  "https://prismapresssystem-92exmp22t-plushbeauty.vercel.app",
+  "https://prismapresssystem-git-fix-master-bootstrap-r-21c94c-plushbeauty.vercel.app",
   "https://prismapresssystem.vercel.app",
   "http://localhost:5173",
 ]);
