@@ -1,5 +1,6 @@
 import { Component, useEffect, useState, type ErrorInfo, type ReactNode } from 'react'
 import { useSession } from './contexts/SessionContext'
+import { supabase } from './lib/supabaseClient'
 import DashboardPage from './features/comercial/DashboardPage'
 import ClientesPage from './features/comercial/ClientesPage'
 import OrcamentosPage from './features/comercial/OrcamentosPage'
@@ -94,6 +95,13 @@ function AppContent() {
   const [page, setPage] = useState('Visão geral')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [setupOpen, setSetupOpen] = useState(false)
+  const [setupName, setSetupName] = useState('')
+  const [setupEmail, setSetupEmail] = useState('')
+  const [setupPassword, setSetupPassword] = useState('')
+  const [setupCompany, setSetupCompany] = useState('')
+  const [setupMessage, setSetupMessage] = useState<string | null>(null)
+  const [setupLoading, setSetupLoading] = useState(false)
 
   useEffect(() => {
     const navigate = (event: Event) => {
@@ -112,8 +120,35 @@ function AppContent() {
   if (mode === 'home') return <PublicHome onLogin={() => setMode('login')} />
 
   if (mode === 'login') return <main className="login">
-    <section className="visual"><div className="brand"><Command/> PRISMA<span>PRES</span></div><div><small>GESTÃO INTELIGENTE PARA GRÁFICAS</small><h1>Sua gráfica.<br/><em>Em outra</em> dimensão.</h1><p>Da primeira ideia à entrega final: clareza, controle e criatividade em cada etapa da impressão.</p></div><div className="paper-art"><i/><i/><i/></div><footer>COMERCIAL · PRODUÇÃO · FINANCEIRO</footer></section>
-    <section className="access"><small>PRISMAPRES / PORTAL</small><form onSubmit={async e => { e.preventDefault(); setAuthMessage(null); const result = await signIn(email, password); if (result.error) setAuthMessage(result.error) }}><label>BEM-VINDO DE VOLTA</label><h2>Acesse seu espaço.</h2><p>Entre para acompanhar sua operação gráfica.</p><span>E-mail de acesso</span><input type="email" placeholder="voce@suaempresa.com.br" value={email} onChange={e => setEmail(e.target.value)} required/><span>Senha</span><input type="password" placeholder="Sua senha" value={password} onChange={e => setPassword(e.target.value)} required/><button className="primary" disabled={authLoading}>{authLoading ? 'Verificando acesso...' : 'Entrar no PRISMAPRES'} <ArrowUpRight size={17}/></button>{(authMessage || authError) && <small role="alert" className="disclaimer">{authMessage || authError}</small>}{session && !dbReady && !authLoading && <small role="status" className="disclaimer">A sessão foi autenticada, mas o perfil da empresa ainda não está pronto.</small>}<button type="button" className="secondary" onClick={() => setMode('home')}>Voltar ao site</button><small className="disclaimer">Acesso protegido pelo Supabase exclusivo do PRISMAPRES.</small></form><footer>© 2026 PRISMAPRES</footer></section>
+    <section className="visual"><div className="brand"><Command/> PRISMA<span>PRES</span></div><div><small>GESTÃO INTELIGENTE PARA GRÁFICAS</small><h1>Sua gráfica.<br/><em>Em outra</em> dimensão.</h1><p>Da primeira ideia à entrega final: clareza, controle e criatividade em cada etapa da impressão.</p></div><div className="paper-art"><i/><i/><i/></div><footer><button type="button" className="first-access-trigger" onClick={() => { setSetupOpen(value => !value); setSetupMessage(null) }} aria-expanded={setupOpen}>COMERCIAL · PRODUÇÃO · FINANCEIRO</button></footer></section>
+    <section className="access"><small>PRISMAPRES / PORTAL</small><form onSubmit={async e => { e.preventDefault(); setAuthMessage(null); const result = await signIn(email, password); if (result.error) setAuthMessage(result.error) }}><label>BEM-VINDO DE VOLTA</label><h2>Acesse seu espaço.</h2><p>Entre para acompanhar sua operação gráfica.</p><span>E-mail de acesso</span><input type="email" placeholder="voce@suaempresa.com.br" value={email} onChange={e => setEmail(e.target.value)} required/><span>Senha</span><input type="password" placeholder="Sua senha" value={password} onChange={e => setPassword(e.target.value)} required/><button className="primary" disabled={authLoading}>{authLoading ? 'Verificando acesso...' : 'Entrar no PRISMAPRES'} <ArrowUpRight size={17}/></button>{(authMessage || authError) && <small role="alert" className="disclaimer">{authMessage || authError}</small>}{session && !dbReady && !authLoading && <small role="status" className="disclaimer">A sessão foi autenticada, mas o perfil da empresa ainda não está pronto.</small>}<button type="button" className="secondary" onClick={() => setMode('home')}>Voltar ao site</button><small className="disclaimer">Acesso protegido pelo Supabase exclusivo do PRISMAPRES.</small></form><footer>© 2026 PRISMAPRES</footer>
+      {setupOpen && <div className="first-access-overlay" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) setSetupOpen(false) }}>
+        <section className="first-access-card" role="dialog" aria-modal="true" aria-labelledby="first-access-title">
+          <button type="button" className="first-access-close" onClick={() => setSetupOpen(false)} aria-label="Fechar">×</button>
+          <small>PRISMAPRES / CONFIGURAÇÃO INICIAL</small>
+          <h2 id="first-access-title">Primeiro acesso MASTER</h2>
+          <p>Cadastre os dados do administrador e da empresa proprietária.</p>
+          <form onSubmit={async event => {
+            event.preventDefault()
+            setSetupMessage(null)
+            if (!supabase) { setSetupMessage('Supabase do PRISMAPRES não está configurado.'); return }
+            setSetupLoading(true)
+            const { error } = await supabase.functions.invoke('prismapres-master-bootstrap', { body: { nome: setupName.trim(), email: setupEmail.trim(), senha: setupPassword, empresa: setupCompany.trim() } })
+            setSetupLoading(false)
+            if (error) setSetupMessage('Não foi possível concluir: o serviço seguro de primeiro acesso ainda precisa ser configurado no Supabase. Nenhuma conta foi criada.')
+            else setSetupMessage('Solicitação concluída. Verifique seu e-mail para confirmar o acesso.')
+          }}>
+            <label>Nome do administrador</label><input value={setupName} onChange={event => setSetupName(event.target.value)} autoComplete="name" required />
+            <label>Usuário / e-mail</label><input type="email" value={setupEmail} onChange={event => setSetupEmail(event.target.value)} autoComplete="email" required />
+            <label>Senha master</label><input type="password" value={setupPassword} onChange={event => setSetupPassword(event.target.value)} autoComplete="new-password" minLength={10} required />
+            <label>Nome da empresa</label><input value={setupCompany} onChange={event => setSetupCompany(event.target.value)} required />
+            <button className="primary" type="submit" disabled={setupLoading}>{setupLoading ? 'Configurando...' : 'Criar acesso MASTER'}</button>
+            {setupMessage && <small className="first-access-message" role="status">{setupMessage}</small>}
+            <small className="disclaimer">A criação MASTER é validada no servidor; não armazenamos a senha no navegador.</small>
+          </form>
+        </section>
+      </div>}
+    </section>
   </main>
 
   if (authLoading || (session && !dbReady)) return <main className="login"><section className="access"><small>PRISMAPRES / PORTAL</small><div><h2>Validando seu acesso...</h2><p>{authError || 'Carregando perfil e empresa.'}</p><button className="secondary" onClick={() => setMode('login')}>Voltar ao login</button></div></section></main>
