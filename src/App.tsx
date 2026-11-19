@@ -99,9 +99,24 @@ function AppContent() {
   const [setupName, setSetupName] = useState('')
   const [setupEmail, setSetupEmail] = useState('')
   const [setupPassword, setSetupPassword] = useState('')
-  const [setupCompany, setSetupCompany] = useState('')
+  const [setupConfirm, setSetupConfirm] = useState('')
+  const [setupAvailable, setSetupAvailable] = useState<boolean | null>(null)
   const [setupMessage, setSetupMessage] = useState<string | null>(null)
   const [setupLoading, setSetupLoading] = useState(false)
+
+  useEffect(() => {
+    if (!setupOpen) return
+    let active = true
+    setSetupAvailable(null)
+    if (!supabase) { setSetupAvailable(false); setSetupMessage('Supabase do PRISMAPRES não está configurado.'); return }
+    void supabase.functions.invoke('prismapres-master-bootstrap', { body: { action: 'status' } }).then(({ data, error }) => {
+      if (!active) return
+      if (error) { setSetupAvailable(false); setSetupMessage('Serviço de cadastro MASTER indisponível. Verifique a configuração do Supabase.'); return }
+      setSetupAvailable(Boolean(data?.available))
+      if (!data?.available) setSetupMessage('O proprietário MASTER já foi cadastrado. O primeiro acesso está bloqueado.')
+    }).catch(() => { if (active) { setSetupAvailable(false); setSetupMessage('Não foi possível consultar a disponibilidade do cadastro MASTER.') } })
+    return () => { active = false }
+  }, [setupOpen])
 
   useEffect(() => {
     const navigate = (event: Event) => {
@@ -127,24 +142,30 @@ function AppContent() {
           <button type="button" className="first-access-close" onClick={() => setSetupOpen(false)} aria-label="Fechar">×</button>
           <small>PRISMAPRES / CONFIGURAÇÃO INICIAL</small>
           <h2 id="first-access-title">Primeiro acesso MASTER</h2>
-          <p>Cadastre os dados do administrador e da empresa proprietária.</p>
+          <p>Cadastre o proprietário universal do PRISMAPRES. Este acesso não pertence a uma empresa específica.</p>
           <form onSubmit={async event => {
             event.preventDefault()
             setSetupMessage(null)
             if (!supabase) { setSetupMessage('Supabase do PRISMAPRES não está configurado.'); return }
+            if (setupPassword !== setupConfirm) { setSetupMessage('A confirmação da senha não confere.'); return }
+            if (setupAvailable !== true) { setSetupMessage('O cadastro MASTER não está disponível neste momento.'); return }
             setSetupLoading(true)
-            const { error } = await supabase.functions.invoke('prismapres-master-bootstrap', { body: { nome: setupName.trim(), email: setupEmail.trim(), senha: setupPassword, empresa: setupCompany.trim() } })
+            const { data, error } = await supabase.functions.invoke('prismapres-master-bootstrap', { body: { action: 'bootstrap_master', nome: setupName.trim(), email: setupEmail.trim().toLowerCase(), password: setupPassword } })
             setSetupLoading(false)
-            if (error) setSetupMessage('Não foi possível concluir: o serviço seguro de primeiro acesso ainda precisa ser configurado no Supabase. Nenhuma conta foi criada.')
-            else setSetupMessage('Solicitação concluída. Verifique seu e-mail para confirmar o acesso.')
+            if (error || !data?.ok) setSetupMessage(data?.error === 'MASTER_ALREADY_EXISTS' ? 'O proprietário MASTER já existe. Cadastro bloqueado.' : 'Não foi possível concluir o cadastro. Verifique o serviço e tente novamente.')
+            else {
+              const login = await supabase.auth.signInWithPassword({ email: setupEmail.trim().toLowerCase(), password: setupPassword })
+              if (login.error) setSetupMessage('MASTER criado. Faça login com o e-mail e a senha cadastrados.')
+              else setSetupMessage('Acesso MASTER criado com sucesso. Preparando o painel...')
+            }
           }}>
             <label>Nome do administrador</label><input value={setupName} onChange={event => setSetupName(event.target.value)} autoComplete="name" required />
             <label>Usuário / e-mail</label><input type="email" value={setupEmail} onChange={event => setSetupEmail(event.target.value)} autoComplete="email" required />
-            <label>Senha master</label><input type="password" value={setupPassword} onChange={event => setSetupPassword(event.target.value)} autoComplete="new-password" minLength={10} required />
-            <label>Nome da empresa</label><input value={setupCompany} onChange={event => setSetupCompany(event.target.value)} required />
-            <button className="primary" type="submit" disabled={setupLoading}>{setupLoading ? 'Configurando...' : 'Criar acesso MASTER'}</button>
+            <label>Senha MASTER</label><input type="password" value={setupPassword} onChange={event => setSetupPassword(event.target.value)} autoComplete="new-password" minLength={8} required />
+            <label>Confirmar senha</label><input type="password" value={setupConfirm} onChange={event => setSetupConfirm(event.target.value)} autoComplete="new-password" minLength={8} required />
+            <button className="primary" type="submit" disabled={setupLoading || setupAvailable !== true}>{setupLoading ? 'Configurando...' : setupAvailable === null ? 'Verificando disponibilidade...' : setupAvailable ? 'Criar proprietário MASTER' : 'Cadastro MASTER indisponível'}</button>
             {setupMessage && <small className="first-access-message" role="status">{setupMessage}</small>}
-            <small className="disclaimer">A criação MASTER é validada no servidor; não armazenamos a senha no navegador.</small>
+            <small className="disclaimer">O servidor permite somente um cadastro MASTER inicial. Nenhuma empresa é criada nesta etapa.</small>
           </form>
         </section>
       </div>}
