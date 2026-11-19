@@ -3,13 +3,12 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 
 const allowedOrigins = new Set([
   "https://prismapresssystem-2315rkrly-plushbeauty.vercel.app",
-  "https://prismapresssystem-92exmp22t-plushbeauty.vercel.app",
-  "https://prismapresssystem-git-fix-master-bootstrap-r-21c94c-plushbeauty.vercel.app",
   "https://prismapresssystem.vercel.app",
   "http://localhost:5173",
 ]);
+const allowedOrigin = (origin: string | null) => Boolean(origin && (allowedOrigins.has(origin) || /^https:\\/\\/prismapresssystem-[a-z0-9-]+-plushbeauty\\.vercel\\.app$/.test(origin)));
 const headers = (origin: string | null) => ({
-  "Access-Control-Allow-Origin": origin && allowedOrigins.has(origin) ? origin : "https://prismapresssystem-2315rkrly-plushbeauty.vercel.app",
+  "Access-Control-Allow-Origin": allowedOrigin(origin) ? origin! : "https://prismapresssystem.vercel.app",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Cache-Control": "no-store",
