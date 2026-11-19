@@ -27,7 +27,7 @@ create table if not exists public.gr_usuarios (
 
 create unique index if not exists gr_usuarios_um_master
   on public.gr_usuarios ((is_master))
-  where is_master = true and ativo = true;
+  where is_master = true;
 
 create index if not exists gr_usuarios_empresa_idx on public.gr_usuarios(empresa_id);
 create index if not exists gr_usuarios_email_idx on public.gr_usuarios(lower(email));
@@ -40,11 +40,6 @@ create policy gr_usuarios_select_self_or_master on public.gr_usuarios
 for select to authenticated
 using (
   id = (select auth.uid())
-  or exists (
-    select 1 from public.gr_usuarios me
-    where me.id = (select auth.uid())
-      and me.is_master = true and me.ativo = true
-  )
 );
 
 drop policy if exists gr_empresas_select_tenant_or_master on public.gr_empresas;
