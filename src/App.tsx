@@ -9,6 +9,7 @@ import ProducaoPage from './features/producao/ProducaoPage'
 import BlogPage from './features/comercial/BlogPage'
 import WorkspaceModule from './features/workspace/WorkspaceModule'
 import PublicShell from './features/public/PublicShell'
+import MasterDashboard from './features/master/MasterDashboard'
 import { ArrowUpRight, Bell, BookOpen, Boxes, Check, CheckCircle2, ChevronDown, ClipboardList, Command, Factory, FileText, LayoutDashboard, Palette, Plus, Printer, Search, Settings2, ShoppingCart, Truck, Users, Wallet, Calculator, PackageCheck, Receipt, ShieldCheck, Cog, Headset, RefreshCw, LockKeyhole, Quote, Star } from 'lucide-react'
 
 const groups = [
@@ -175,6 +176,8 @@ function AppContent() {
   if (authLoading || (session && !dbReady)) return <main className="login"><section className="access"><small>PRISMAPRES / PORTAL</small><div><h2>Validando seu acesso...</h2><p>{authError || 'Carregando perfil e empresa.'}</p><button className="secondary" onClick={() => setMode('login')}>Voltar ao login</button></div></section></main>
 
   if (!session || !dbReady) return <main className="login"><section className="access"><small>PRISMAPRES / PORTAL</small><div><h2>Acesso necessário</h2><p>{authError || 'Entre com sua conta para acessar o workspace.'}</p><button className="primary" onClick={() => setMode('login')}>Ir para login</button></div></section></main>
+
+  if (session && dbReady && perfil?.papel === 'master') return <MasterDashboard nome={perfil.nome} onSignOut={() => void signOut()} />
 
   return (
     <div className="shell">
